@@ -1,0 +1,314 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2"> 
+    <h3 class="text-center text-uppercase fw-bold mb-4">Interesado CR</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-user-plus me-2"></i>
+            <strong> Agregar Interesado CR</strong> 
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-bordered table-hover table-striped align-middle text-center custom-table ">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ID Interesado</th>
+                    <th>Tipo de Interesado</th>
+                    <th>Tipo de Documento</th>
+                    <th>Documento de Identidad</th>
+                    <th>Primer Nombre</th>
+                    <th>Segundo Nombre</th>
+                    <th>Primer Apellido</th>
+                    <th>Segundo Apellido</th>
+                    <th>Sexo</th>
+                    <th>Grupo Étnico</th>
+                    <th>Razón Social</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of crInteresadoArray | filter: searchText : ['interesado', 'tipo', 'tipo_documento', 'documento_identidad', 'primer_nombre', 'segundo_nombre', 'primer_apellido', 'segundo_apellido', 'sexo', 'grupo_etnico', 'razon_social'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ item.interesado }}</td>
+                    <td>{{ item.tipo }}</td>
+                    <td>{{ item.tipo_documento }}</td>
+                    <td>{{ item.documento_identidad }}</td>
+                    <td>{{ item.primer_nombre }}</td>
+                    <td>{{ item.segundo_nombre }}</td>
+                    <td>{{ item.primer_apellido }}</td>
+                    <td>{{ item.segundo_apellido }}</td>
+                    <td>{{ item.sexo }}</td>
+                    <td>{{ item.grupo_etnico }}</td>
+                    <td>{{ item.razon_social }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+     
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+        <div style="width: 33%;" class="text-start">
+          <button
+            class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+            [routerLink]="['/col-interesado']">
+            <i class="fa-solid fa-circle-left ms-1"></i>
+            <strong> Interesados (COL)</strong>
+          </button>
+        </div>
+      
+        <div class="d-flex justify-content-center" style="width: 33%;">
+          <pagination-controls
+            (pageChange)="page = $event"
+            previousLabel="Anterior"
+            nextLabel="Siguiente">
+          </pagination-controls>
+        </div>
+      
+        <div class="d-flex justify-content-end" style="width: 33%;">
+          <button
+            class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+            [routerLink]="['/lc-interesado-contacto']">
+            <strong>Contactos de los interesados  </strong>
+            <i class="fa-solid fa-circle-right me-1"></i>
+          </button>
+        </div>
+      </div>
+
+   <!-- Formulario de Interesado -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Interesado CR</h5>
+        <form #crInteresadoForm="ngForm">
+            <div class="row">
+                
+                 <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="interesado" class="form-label mb-0 fw-bold">ID Interesado <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="interesado"
+                        name="interesado"
+                        [(ngModel)]="crInteresadoObj.interesado"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione interesado</option>
+                        <option *ngFor="let interesado of interesados" [value]="interesado.id">
+                          {{ interesado.id }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/col-interesado']"
+                      title="Ir a interesado COL">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="tipo" class="form-label mb-0 fw-bold">Tipo de interesado <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="tipo"
+                        name="tipo"
+                        [(ngModel)]="crInteresadoObj.tipo"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione una opción</option>
+                        <option *ngFor="let tipo of tiposInteresado" [value]="tipo.valor">
+                            {{ tipo.etiqueta }}
+                        </option>
+                      </select>
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="tipo_documento" class="form-label mb-0 fw-bold">Tipo de documento <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="tipo_documento"
+                        name="tipo_documento"
+                        [(ngModel)]="crInteresadoObj.tipo_documento"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione una opción</option>
+                        <option *ngFor="let tipo of tiposDocumento" [value]="tipo.valor">
+                            {{ tipo.etiqueta }}
+                        </option>
+                      </select>
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="documento_identidad" class="form-label mb-0 fw-bold">Documento de identidad <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="crInteresadoObj.documento_identidad"
+                             id="documento_identidad"
+                             name="documento_identidad"
+                             class="form-control"
+                             placeholder="Documento de Identidad."
+                             required="">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="primer_nombre" class="form-label mb-0">Primer nombre </label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="crInteresadoObj.primer_nombre"
+                             id="primer_nombre"
+                             name="primer_nombre"
+                             class="form-control"
+                             placeholder="Primer Nombre.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="segundo_nombre" class="form-label mb-0">Segundo nombre </label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="crInteresadoObj.segundo_nombre"
+                             id="segundo_nombre"
+                             name="segundo_nombre"
+                             class="form-control"
+                             placeholder="Segundo Nombre.">
+                    </div>
+                </div>
+
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="primer_apellido" class="form-label mb-0">Primer apellido </label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="crInteresadoObj.primer_apellido"
+                             id="primer_apellido"
+                             name="primer_apellido"
+                             class="form-control"
+                             placeholder="Primer Apellido.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="segundo_apellido" class="form-label mb-0">Segundo apellido </label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="crInteresadoObj.segundo_apellido"
+                             id="segundo_apellido"
+                             name="segundo_apellido"
+                             class="form-control"
+                             placeholder="Segundo Apellido.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="sexo" class="form-label mb-0">Sexo </label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="sexo"
+                        name="sexo"
+                        [(ngModel)]="crInteresadoObj.sexo">
+                        <option [ngValue]="null" disabled selected>Seleccione una opción</option>
+                        <option *ngFor="let tipo of tiposSexo" [value]="tipo.valor">
+                            {{ tipo.etiqueta }}
+                        </option>
+                      </select>
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="grupo_etnico" class="form-label mb-0">Tipo de grupo étnico </label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="grupo_etnico"
+                        name="grupo_etnico"
+                        [(ngModel)]="crInteresadoObj.grupo_etnico">
+                        <option [ngValue]="null" disabled selected>Seleccione una opción</option>
+                        <option *ngFor="let tipo of tiposGrupoEtnico" [value]="tipo.valor">
+                            {{ tipo.etiqueta }}
+                        </option>
+                      </select>
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="razon_social" class="form-label mb-0">Razón Social </label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="crInteresadoObj.razon_social"
+                             id="razon_social"
+                             name="razon_social"
+                             class="form-control"
+                             placeholder="Razón Social.">
+                    </div>
+                </div>
+
+            </div>
+    
+            <div class="text-center mt-3">
+                @if (crInteresadoObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSaveCrInteresado()" [disabled]="!crInteresadoForm.valid || !crInteresadoObj.interesado || crInteresadoObj.interesado === 0">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                } @else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm"  (click)="onUpdateCrInteresdo()" [disabled]="!crInteresadoForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                
+                <button type="button" class="btn btn-danger me-2 btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+        
+    </div>
+
+</div>

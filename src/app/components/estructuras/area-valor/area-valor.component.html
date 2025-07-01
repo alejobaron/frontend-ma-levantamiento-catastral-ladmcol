@@ -1,0 +1,143 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Valor de área</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-layer-group"></i> Agregar valor de área
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ID Valor de área</th>
+                    <th>Tipo</th>
+                    <th>Área</th>
+                    <th>Datos de proyección</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of areaValorArray | filter: searchText : ['id_area_valor', 'tipo', 'area', 'datos_proyeccion'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id_area_valor }}</td>
+                    <td>{{ item.tipo }}</td>
+                    <td>{{ item.area }}</td>
+                    <td>{{ item.datos_proyeccion }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
+        <pagination-controls (pageChange)="page = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
+    </div>
+
+   <!-- Formulario de Valor de área -->
+   <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+    <h5 class="text-center mb-3">Agregar / Editar Valor de área</h5>
+    <form #areaValorForm="ngForm">
+        <div class="row">
+            <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="id_area_valor" class="form-label mb-0">ID Valor de área</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="areaValorObj.id_area_valor"
+                         id="id_area_valor"
+                         name="id_area_valor"
+                         class="form-control"
+                         placeholder="Identificador único del valor de área."
+                         required>
+                </div>
+              </div>
+              
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="tipo" class="form-label mb-0">Tipo</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="areaValorObj.tipo"
+                         id="tipo"
+                         name="tipo"
+                         class="form-control"
+                         placeholder="Àrea geográfica o alfanumérica de la base de datos catastral."
+                         required>
+                </div>
+              </div>
+
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="area" class="form-label mb-0">Área</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="areaValorObj.area"
+                         id="area"
+                         name="area"
+                         class="form-control"
+                         placeholder="Valor del área registral en la base de datos catastral."
+                         required>
+                </div>
+              </div>
+              
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="datos_proyeccion" class="form-label mb-0">Datos de proyección</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="areaValorObj.datos_proyeccion"
+                         id="datos_proyeccion"
+                         name="datos_proyeccion"
+                         class="form-control"
+                         placeholder="Parametros de la proyección utilizada para el cálculo del área.">
+                </div>
+              </div>
+        </div>
+
+        <div class="text-center mt-3">
+            @if (areaValorObj.id == 0){
+                <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSaveAreaValor()" [disabled]="!areaValorForm.valid">
+                    <i class="fa-solid fa-save"></i> Guardar
+                </button>
+            }@else {
+                <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdateAreaValor()" [disabled]="!areaValorForm.valid">
+                    <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                </button>
+            }
+            <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                <i class="fa-solid fa-times"></i> Cancelar
+            </button>
+        </div>
+        </form>
+    </div>
+
+</div>
+

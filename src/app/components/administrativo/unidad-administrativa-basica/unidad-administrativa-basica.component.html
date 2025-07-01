@@ -1,0 +1,136 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Unidad Administrativa Básica</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-hashtag"></i>
+            <strong> Agregar Unidad Administrativa Básica </strong>
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>PK</th>
+                    <th>Nombre</th>
+                    <th>Tipo UAB</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of unidadAdministrativaBasicaArray | filter: searchText : ['nombre', 'tipo_UAB_nombre'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.tipo_UAB_nombre}}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+    <div style="width: 33%;"></div>
+   
+    <div class="d-flex justify-content-center" style="width: 33%;">
+      <pagination-controls
+        (pageChange)="page = $event"
+        previousLabel="Anterior"
+        nextLabel="Siguiente">
+      </pagination-controls>
+    </div>
+  
+    <div class="d-flex justify-content-end" style="width: 33%;">
+      <button
+        class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+        [routerLink]="['/predio']">
+        <strong>Registrar predio  </strong>
+        <i class="fa-solid fa-circle-right me-1"></i>
+      </button>
+    </div>
+    </div>
+  
+
+   <!-- Formulario de Unidad Básica Administrativa -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Unidad Administrativa Básica</h5>
+        <form #unidadAdministrativaBasicaForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="nombre" class="form-label mb-0">Nombre</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="unidadAdministrativaBasicaObj.nombre"
+                             id="nombre"
+                             name="nombre"
+                             class="form-control"
+                             placeholder="Ejemplo: UAB_001">
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="tipo_UAB" class="form-label mb-0 fw-bold">Tipo UAB <span class="text-danger">*</span> </label>
+                    </div>
+                    <div class="col-md-6">
+                        <select
+                            class="form-select"
+                            id="tipo_UAB"
+                            name="tipo_UAB"
+                            [(ngModel)]="unidadAdministrativaBasicaObj.tipo_UAB"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione una opción</option>
+                            <option *ngFor="let tipo of tiposUAB" [value]="tipo.valor">
+                                {{ tipo.etiqueta }}
+                            </option>
+                        </select>
+                    </div>
+                  </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (unidadAdministrativaBasicaObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!unidadAdministrativaBasicaForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!unidadAdministrativaBasicaForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+

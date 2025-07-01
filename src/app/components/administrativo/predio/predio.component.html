@@ -1,0 +1,353 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Predio</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+          <i class="fa-solid fa-house"></i>
+          <strong> Agregar Predio</strong> 
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>PK</th>
+                    <th>UAB</th>
+                    <th>Departamento</th>
+                    <th>Municipio</th>
+                    <th>Dirección</th>
+                    <th>ID de Operación</th>
+                    <th>Código ORIP</th>
+                    <th>Matrícula inmobiliaria</th>
+                    <th>Número Predial</th>
+                    <th>Código homologado</th>
+                    <th>Avalúo Catastral</th>
+                    <th>Tipo</th>
+                    <th>Condición</th>
+                    <th>Destinación económica</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of predioArray | filter: searchText : ['id', 'departamento','municipio','direccion','id_operacion','codigo_orip','matricula_inmobiliaria','numero_predial','codigo_homologado','avaluo_catastral','tipo','condicion_predio','destinacion_economica','lc_predio_informalidad'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.nombre_UAB }}</td>
+                    <td>{{ item.departamento }}</td>
+                    <td>{{ item.municipio }}</td>
+                    <td>{{ item.direccion }}</td>
+                    <td>{{ item.id_operacion }}</td>
+                    <td>{{ item.codigo_orip }}</td>
+                    <td>{{ item.matricula_inmobiliaria }}</td>
+                    <td>{{ item.numero_predial }}</td>
+                    <td>{{ item.codigo_homologado }}</td>
+                    <td>{{ item.avaluo_catastral }}</td>
+                    <td>{{ item.tipo }}</td>
+                    <td>{{ item.condicion_predio }}</td>
+                    <td>{{ item.destinacion_economica }}</td>
+                    
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)" title="Editar">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)" title="Eliminar">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+     
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+      <div style="width: 33%;" class="text-start">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/unidad-administrativa-basica']">
+          <i class="fa-solid fa-circle-left ms-1"></i>
+          <strong> Unidad Administrativa Básica</strong>
+        </button>
+      </div>
+    
+      <div class="d-flex justify-content-center" style="width: 33%;">
+        <pagination-controls
+          (pageChange)="page = $event"
+          previousLabel="Anterior"
+          nextLabel="Siguiente">
+        </pagination-controls>
+      </div>
+    
+      <div class="d-flex justify-content-end" style="width: 33%;">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/predio-copropiedad']">
+          <strong>Predio-copropiedad  </strong>
+          <i class="fa-solid fa-circle-right me-1"></i>
+        </button>
+      </div>
+    </div>
+
+   <!-- Formulario de Predio -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Predio</h5>
+        <form #predioForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="unidad_basica_administrativa" class="form-label mb-0 fw-bold">Unidad Administrativa Básica <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="unidad_basica_administrativa"
+                        name="unidad_basica_administrativa"
+                        [(ngModel)]="predioObj.unidad_basica_administrativa"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione la Unidad Administrativa Básica</option>
+                        <option *ngFor="let uab of unidadesAdministrativas" [value]="uab.id">
+                          {{ uab.nombre }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/unidad-administrativa-basica']"
+                      title="Ir a Unidad Administrativa Básica">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="departamento" class="form-label mb-0 fw-bold">Departamento <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="predioObj.departamento"
+                             id="departamento"
+                             name="departamento"
+                             class="form-control"
+                             placeholder="Código del Departamento al cual pertenece el predio."
+                             required>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="municipio" class="form-label mb-0 fw-bold">Municipio <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="predioObj.municipio"
+                             id="municipio"
+                             name="municipio"
+                             class="form-control"
+                             placeholder="Código del municipio al cual pertenece el predio."
+                             required>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="direccion" class="form-label mb-0 fw-bold">Dirección <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="direccion"
+                        name="direccion"
+                        [(ngModel)]="predioObj.direccion"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione la dirección</option>
+                        <option *ngFor="let direccion of direcciones" [value]="direccion.id">
+                          {{ direccion.id_direccion}}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/ext-direccion']"
+                      title="Ir a Direcciones">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="id_operacion" class="form-label mb-0 fw-bold">ID de Operación <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="predioObj.id_operacion"
+                             id="id_operacion"
+                             name="id_operacion"
+                             class="form-control"
+                             placeholder="Identificador único temporal del predio en el levantamiento catastral.">
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="codigo_orip" class="form-label mb-0">Código ORIP</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="predioObj.codigo_orip"
+                             id="codigo_orip"
+                             name="codigo_orip"
+                             class="form-control"
+                             placeholder="Circulo registral.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="matricula_inmobiliaria" class="form-label mb-0">Matrícula inmobiliaria</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="predioObj.matricula_inmobiliaria"
+                             id="matricula_inmobiliaria"
+                             name="matricula_inmobiliaria"
+                             class="form-control"
+                             placeholder="Matricula inmobiliaria.">
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="numero_predial" class="form-label mb-0">Número Predial</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text" maxlength="30" minlength="30" pattern="\d{30}"
+                             [(ngModel)]="predioObj.numero_predial"
+                             id="numero_predial"
+                             name="numero_predial"
+                             class="form-control"
+                             placeholder="Código numérico de treinta (30) digitos, que se le asigna a cada predio.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="codigo_homologado" class="form-label mb-0">Código homologado</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="predioObj.codigo_homologado"
+                             id="codigo_homologado"
+                             name="codigo_homologado"
+                             class="form-control"
+                             placeholder="Código único para identificar los inmuebles.">
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="avaluo_catastral" class="form-label mb-0">Avalúo Catastral</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="predioObj.avaluo_catastral"
+                             id="avaluo_catastral"
+                             name="avaluo_catastral"
+                             class="form-control"
+                             placeholder="Valor del avalúo catastral del predio.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="tipo" class="form-label mb-0 fw-bold">Tipo de predio <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                            class="form-select"
+                            id="tipo"
+                            name="tipo"
+                            [(ngModel)]="predioObj.tipo"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione una opción</option>
+                            <option *ngFor="let tipo of tiposPredio" [value]="tipo.valor">
+                                {{ tipo.etiqueta }}
+                            </option>
+                        </select>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="condicion_predio" class="form-label mb-0 fw-bold">Condición del predio <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                            class="form-select"
+                            id="condicion_predio"
+                            name="condicion_predio"
+                            [(ngModel)]="predioObj.condicion_predio"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione una opción</option>
+                            <option *ngFor="let tipo of tiposCondicionPredio" [value]="tipo.valor">
+                                {{ tipo.etiqueta }}
+                            </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="destinacion_economica" class="form-label mb-0 fw-bold">Destinación económica <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                            class="form-select"
+                            id="destinacion_economica"
+                            name="destinacion_economica"
+                            [(ngModel)]="predioObj.destinacion_economica"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione una opción</option>
+                            <option *ngFor="let tipo of tiposDestinacionEconomica" [value]="tipo.valor">
+                                {{ tipo.etiqueta }}
+                            </option>
+                      </select>
+                    </div>
+                  </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (predioObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!predioForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!predioForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

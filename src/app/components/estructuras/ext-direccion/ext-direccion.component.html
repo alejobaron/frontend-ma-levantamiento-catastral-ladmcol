@@ -1,0 +1,198 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">DIRECCIONES</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-location-dot me-2"></i> Agregar Direcciones
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>PK</th>
+                    <th>ID Dirección</th>
+                    <th>Tipo de dirección</th>
+                    <th>¿Es dirección principal?</th>
+                    <th>Código postal</th>
+                    <th>Clase vía principal</th>
+                    <th>Valor vía principal</th>
+                    <th>Letra vía principal</th>
+                    <th>Letra de vía generadora</th>
+                    <th>Sector ciudad</th>
+                    <th>Valor de vía generadora</th>
+                    <th>Número del predio</th>
+                    <th>Sector predio</th>
+                    <th>Complemento</th>
+                    <th>Nombre del predio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of direccionArray; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.id_direccion }}</td>
+                    <td>{{ item.tipo_direccion }}</td>
+                    <td>{{ item.es_direccion_principal }}</td>
+                    <td>{{ item.codigo_postal }}</td>
+                    <td>{{ item.clase_via_principal }}</td>
+                    <td>{{ item.valor_via_principal }}</td>
+                    <td>{{ item.letra_via_generadora }}</td>
+                    <td>{{ item.valor_via_generadora }}</td>
+                    <td>{{ item.sector_ciudad }}</td>
+                    <td>{{ item.valor_via_generadora }}</td>
+                    <td>{{ item.numero_predio }}</td>
+                    <td>{{ item.sector_predio }}</td>
+                    <td>{{ item.complemento }}</td>
+                    <td>{{ item.nombre_predio }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
+        <pagination-controls (pageChange)="page = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
+    </div>
+
+   <!-- Formulario de Dirección -->
+   <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+    <h5 class="text-center mb-3">Agregar / Editar Dirección</h5>
+    <form #direccionForm="ngForm" class="small">
+        <div class="row g-4">
+
+            <div class="col-12">
+              <h6 class="border-bottom pb-2" >Información básica</h6>
+            </div>
+        
+            <div class="col-md-2">
+              <label for="id_direccion" class="form-label">ID Dirección</label>
+              <input type="text" [(ngModel)]="direccionObj.id_direccion" id="id_direccion" name="id_direccion" class="form-control" placeholder="Ejemplo: DIR_001" required>
+            </div>
+        
+            <div class="col-md-3">
+              <label for="tipo_direccion" class="form-label">Tipo de dirección</label>
+              <input type="text" [(ngModel)]="direccionObj.tipo_direccion" id="tipo_direccion" name="tipo_direccion" class="form-control" placeholder="Ejemplo: Estructurada" required>
+            </div>
+        
+            <div class="col-md-3">
+              <label for="es_direccion_principal" class="form-label">¿Es dirección principal?</label>
+              <select [(ngModel)]="direccionObj.es_direccion_principal" id="es_direccion_principal" name="es_direccion_principal" class="form-select">
+                <option value="">Desconocido</option>
+                <option value="true">Sí</option>
+                <option value="false">No</option>
+              </select>
+            </div>
+        
+            <div class="col-md-2">
+              <label for="codigo_postal" class="form-label">Código postal</label>
+              <input type="text" [(ngModel)]="direccionObj.codigo_postal" id="codigo_postal" name="codigo_postal" class="form-control" placeholder="Ejemplo: 110111">
+            </div>
+        
+            <div class="col-12">
+              <h6 class="border-bottom pb-2 mt-4">Vía principal</h6>
+            </div>
+        
+            <div class="col-md-2">
+              <label for="clase_via_principal" class="form-label">Clase</label>
+              <input type="text" [(ngModel)]="direccionObj.clase_via_principal" id="clase_via_principal" name="clase_via_principal" class="form-control" placeholder="Ejemplo: Calle, Carrera">
+            </div>
+        
+            <div class="col-md-2">
+              <label for="valor_via_principal" class="form-label">Valor</label>
+              <input type="text" [(ngModel)]="direccionObj.valor_via_principal" id="valor_via_principal" name="valor_via_principal" class="form-control" placeholder="Ejemplo: 45">
+            </div>
+        
+            <div class="col-md-2">
+              <label for="letra_via_principal" class="form-label">Letra</label>
+              <input type="text" [(ngModel)]="direccionObj.letra_via_principal" id="letra_via_principal" name="letra_via_principal" class="form-control" placeholder="Ejemplo: B">
+            </div>
+        
+            <div class="col-12">
+              <h6 class="border-bottom pb-2 mt-4">Vía generadora</h6>
+            </div>
+        
+            <div class="col-md-2">
+              <label for="valor_via_generadora" class="form-label">Valor</label>
+              <input type="text" [(ngModel)]="direccionObj.valor_via_generadora" id="valor_via_generadora" name="valor_via_generadora" class="form-control" placeholder="Ejemplo: 32">
+            </div>
+        
+            <div class="col-md-2">
+              <label for="letra_via_generadora" class="form-label">Letra</label>
+              <input type="text" [(ngModel)]="direccionObj.letra_via_generadora" id="letra_via_generadora" name="letra_via_generadora" class="form-control" placeholder="Ejemplo: A">
+            </div>
+        
+            <div class="col-12">
+              <h6 class="border-bottom pb-2 mt-4">Predio y sector</h6>
+            </div>
+        
+            <div class="col-md-2">
+              <label for="numero_predio" class="form-label">Número del predio</label>
+              <input type="text" [(ngModel)]="direccionObj.numero_predio" id="numero_predio" name="numero_predio" class="form-control" placeholder="Ejemplo: 101">
+            </div>
+        
+            <div class="col-md-2">
+              <label for="sector_ciudad" class="form-label">Sector ciudad</label>
+              <input type="text" [(ngModel)]="direccionObj.sector_ciudad" id="sector_ciudad" name="sector_ciudad" class="form-control" placeholder="Ejemplo: Norte">
+            </div>
+        
+            <div class="col-md-2">
+              <label for="sector_predio" class="form-label">Sector del predio</label>
+              <input type="text" [(ngModel)]="direccionObj.sector_predio" id="sector_predio" name="sector_predio" class="form-control" placeholder="Ejemplo: Norte">
+            </div>
+        
+            <div class="col-md-6">
+              <label for="nombre_predio" class="form-label">Nombre del predio</label>
+              <input type="text" [(ngModel)]="direccionObj.nombre_predio" id="nombre_predio" name="nombre_predio" class="form-control" placeholder="Ejemplo: Finca El Paraíso">
+            </div>
+        
+            <div class="col-md-12 mt-4">
+              <label for="complemento" class="form-label">Complemento</label>
+              <textarea [(ngModel)]="direccionObj.complemento" id="complemento" name="complemento" class="form-control" rows="2" placeholder="Apartamento 302, Torre B, etc."></textarea>
+            </div>
+        
+          </div>
+
+        <div class="text-center mt-3">
+            @if (direccionObj.id == 0) {
+                <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSaveDireccion()" [disabled]="!direccionForm.valid">
+                    <i class="fa-solid fa-save"></i> Guardar
+                </button>
+            } @else {
+                <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdateDireccion()" [disabled]="!direccionForm.valid">
+                    <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                </button>
+            }
+            <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                <i class="fa-solid fa-times"></i> Cancelar
+            </button>
+        </div>
+    </form>
+</div>
+
+</div>
+

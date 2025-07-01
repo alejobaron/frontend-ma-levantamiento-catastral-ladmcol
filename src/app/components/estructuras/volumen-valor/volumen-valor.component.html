@@ -1,0 +1,129 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Valor de volumen</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-cube"></i> Agregar valor de volumen
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ID Valor de volumen/th>
+                    <th>Volumen medición</th>
+                    <th>Tipo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of volumenValorArray | filter: searchText : ['id_volumen_valor', 'volumen_medicion', 'tipo'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id_volumen_valor }}</td>
+                    <td>{{ item.volumen_medicion }}</td>
+                    <td>{{ item.tipo }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
+        <pagination-controls (pageChange)="page = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
+    </div>
+
+   <!-- Formulario de Valor de volumen -->
+   <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+    <h5 class="text-center mb-3">Agregar / Editar Valor de volumen</h5>
+    <form #volumenValorForm="ngForm">
+        <div class="row">
+            <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="id_volumen_valor" class="form-label mb-0">ID Valor de volumen</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="volumenValorObj.id_volumen_valor"
+                         id="id_volumen_valor"
+                         name="id_volumen_valor"
+                         class="form-control"
+                         placeholder="Identificador único del valor de volumen."
+                         required>
+                </div>
+              </div>
+              
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="volumen_medicion" class="form-label mb-0">Volumen medición</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="volumenValorObj.volumen_medicion"
+                         id="volumen_medicion"
+                         name="volumen_medicion"
+                         class="form-control"
+                         placeholder="Medición del volumen en m3."
+                         required>
+                </div>
+              </div>
+
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="tipo" class="form-label mb-0">Tipo</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="volumenValorObj.tipo"
+                         id="tipo"
+                         name="tipo"
+                         class="form-control"
+                         placeholder="Indicación de si el volumen es calculado, si figura como oficial o si se da otra circunstancia."
+                         required>
+                </div>
+              </div>
+              
+        </div>
+
+        <div class="text-center mt-3">
+            @if (volumenValorObj.id == 0){
+                <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSaveVolumenValor()" [disabled]="!volumenValorForm.valid">
+                    <i class="fa-solid fa-save"></i> Guardar
+                </button>
+            }@else {
+                <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdateVolumenValor()" [disabled]="!volumenValorForm.valid">
+                    <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                </button>
+            }
+            <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                <i class="fa-solid fa-times"></i> Cancelar
+            </button>
+        </div>
+        </form>
+    </div>
+
+</div>
+
+

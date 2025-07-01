@@ -1,0 +1,192 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">GEO</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-layer-group"></i> Agregar GEO
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ID</th>
+                    <th>Área</th>
+                    <th>Dimensión</th>
+                    <th>Dirección</th>
+                    <th>Etiqueta</th>
+                    <th>Relación superficie</th>
+                    <th>Volumen</th>
+                    <th>Geometría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of geoArray | filter: searchText: ['unidad_espacial', 'area_terreno', 'geometria_terreno'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.area }}</td>
+                    <td>{{ item.dimension }}</td>
+                    <td>{{ item.ext_direccion_id }}</td>
+                    <td>{{ item.etiqueta }}</td>
+                    <td>{{ item.relacion_superficie }}</td>
+                    <td>{{ item.volumen }}</td>
+                    <td>{{ item.geometria }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
+        <pagination-controls (pageChange)="page = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
+    </div>
+
+   <!-- Formulario de GEO -->
+   <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar GEO</h5>
+        <form #geoForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                    <label for="area" class="form-label mb-0">Área</label>
+                    </div>
+                    <div class="col-md-6">
+                    <input type="text"
+                            [(ngModel)]="geoObj.area"
+                            id="area"
+                            name="area"
+                            class="form-control"
+                            placeholder="Identificador de la unidad espacial.">
+                    </div>
+                </div>
+                
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                    <label for="dimension" class="form-label mb-0">Dimensión</label>
+                    </div>
+                    <div class="col-md-6">
+                    <input type="text"
+                            [(ngModel)]="geoObj.dimension"
+                            id="dimension"
+                            name="dimension"
+                            class="form-control"
+                            placeholder="Diligenciar Campo.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                    <label for="ext_direccion_id" class="form-label mb-0">Dirección</label>
+                    </div>
+                    <div class="col-md-6">
+                    <input type="text"
+                            [(ngModel)]="geoObj.ext_direccion_id"
+                            id="ext_direccion_id"
+                            name="ext_direccion_id"
+                            class="form-control"
+                            placeholder="Diligenciar Campo.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                    <label for="etiqueta" class="form-label mb-0">Etiqueta</label>
+                    </div>
+                    <div class="col-md-6">
+                    <input type="text"
+                            [(ngModel)]="geoObj.etiqueta"
+                            id="etiqueta"
+                            name="etiqueta"
+                            class="form-control"
+                            placeholder="Diligenciar Campo.">
+                    </div>
+                </div>
+                
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                    <label for="relacion_superficie" class="form-label mb-0">Relación superficie</label>
+                    </div>
+                    <div class="col-md-6">
+                    <input type="text"
+                            [(ngModel)]="geoObj.relacion_superficie"
+                            id="relacion_superficie"
+                            name="relacion_superficie"
+                            class="form-control"
+                            placeholder="Diligenciar Campo.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                    <label for="volumen" class="form-label mb-0">Volumen</label>
+                    </div>
+                    <div class="col-md-6">
+                    <input type="text"
+                            [(ngModel)]="geoObj.volumen"
+                            id="volumen"
+                            name="volumen"
+                            class="form-control"
+                            placeholder="Diligenciar Campo.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                    <label for="geometria" class="form-label mb-0">Geometría</label>
+                    </div>
+                    <div class="col-md-6">
+                    <input type="text"
+                            [(ngModel)]="geoObj.geometria"
+                            id="geometria"
+                            name="geometria"
+                            class="form-control"
+                            placeholder="Diligenciar Campo.">
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (geoObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!geoForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!geoForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+
+                <span class="fw-bold text-muted">ID: {{ geoObj.id }}</span>
+
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+

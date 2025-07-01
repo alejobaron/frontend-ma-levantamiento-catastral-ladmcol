@@ -1,0 +1,144 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Novedad FMI</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-file"></i> Agregar Novedad FMI
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ID Novedad FMI</th>
+                    <th>Código ORIP</th>
+                    <th>Número FMI</th>
+                    <th>Tipo de novedad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of novedadFMIArray | filter: searchText : ['id_novedad_FMI', 'codigo_ORIP', 'numero_FMI', 'tipo_novedadFMI'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id_novedad_FMI }}</td>
+                    <td>{{ item.codigo_ORIP }}</td>
+                    <td>{{ item.numero_FMI}}</td>
+                    <td>{{ item.tipo_novedadFMI}}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody> 
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
+        <pagination-controls (pageChange)="page = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
+    </div>
+
+   <!-- Formulario de Novedad FMI -->
+   <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+    <h5 class="text-center mb-3">Agregar / Editar Novedad FMI</h5>
+    <form #novedadFMIForm="ngForm">
+        <div class="row">
+            <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="id_novedad_FMI" class="form-label mb-0">ID Novedad FMI</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="novedadFMIObj.id_novedad_FMI"
+                         id="id_novedad_FMI"
+                         name="id_novedad_FMI"
+                         class="form-control"
+                         placeholder="Ejemplo: NFMI_001"
+                         required>
+                </div>
+              </div>
+              
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="codigo_ORIP" class="form-label mb-0">Código ORIP</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="novedadFMIObj.codigo_ORIP"
+                         id="codigo_ORIP"
+                         name="codigo_ORIP"
+                         class="form-control"
+                         placeholder="Código de cada oficina de registro de instrumentos públicos"
+                         required>
+                </div>
+              </div>
+
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="numero_FMI" class="form-label mb-0">Número FMI</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="novedadFMIObj.numero_FMI"
+                         id="numero_FMI"
+                         name="numero_FMI"
+                         class="form-control"
+                         placeholder="Consecutivo que se asigna a cada predio juridico abierto en la ORIP"
+                         required>
+                </div>
+              </div>
+              
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="tipo_novedadFMI" class="form-label mb-0">Tipo de novedad</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="novedadFMIObj.tipo_novedadFMI"
+                         id="tipo_novedadFMI"
+                         name="tipo_novedadFMI"
+                         class="form-control"
+                         placeholder="Ejemplo: FMI duplicado"
+                         required>
+                </div>
+              </div>
+        </div>
+
+        <div class="text-center mt-3">
+            @if (novedadFMIObj.id == 0){
+                <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSaveNovedadFMI()" [disabled]="!novedadFMIForm.valid">
+                    <i class="fa-solid fa-save"></i> Guardar
+                </button>
+            }@else {
+                <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdateNovedadFMI()" [disabled]="!novedadFMIForm.valid">
+                    <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                </button>
+            }
+            <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                <i class="fa-solid fa-times"></i> Cancelar
+            </button>
+        </div>
+    </form>
+</div>
+
+</div>
+

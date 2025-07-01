@@ -1,0 +1,181 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Fuente</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fas fa-file-alt"></i> Agregar Fuente
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Estado de disponibilidad</th>
+                    <th>ID archivo</th>
+                    <th>Tipo principal</th>
+                    <th>Fecha de documento fuente</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of fuenteArray | filter: searchText : ['estado_disponibilidad', 'ext_archivo_id', 'tipo_principal', 'fecha_documento_fuente'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.estado_disponibilidad }}</td>
+                    <td>{{ item.ext_archivo_id }}</td>
+                    <td>{{ item.tipo_principal }}</td>
+                    <td>{{ item.fecha_documento_fuente }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+        <div style="width: 33%;" class="text-start">
+        </div>
+
+        <div class="d-flex justify-content-center" style="width: 33%;">
+          <pagination-controls
+            (pageChange)="page = $event"
+            previousLabel="Anterior"
+            nextLabel="Siguiente">
+          </pagination-controls>
+        </div>
+      
+        <div class="d-flex justify-content-end" style="width: 33%;">
+          <button
+            class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+            [routerLink]="['/col-fuente-administrativa']">
+            <strong>Fuente Administrtiva (COL)  </strong>
+            <i class="fa-solid fa-circle-right me-1"></i>
+          </button>
+        </div>
+      </div>
+
+   <!-- Formulario de Fuente -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Fuente</h5>
+        <form #fuenteForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="estado_disponibilidad" class="form-label mb-0 fw-bold">Estado de disponibilidad <span class="text-danger">*</span></label>
+                      
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="estado_disponibilidad"
+                        name="estado_disponibilidad"
+                        [(ngModel)]="fuenteObj.estado_disponibilidad"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione estado de disponibilidad</option>
+                        <option *ngFor="let tipo of tiposEstadoDisponibilidad" [value]="tipo.valor">
+                          {{ tipo.etiqueta }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="ext_archivo_id" class="form-label mb-0">ID archivo</label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="ext_archivo_id"
+                        name="ext_archivo_id"
+                        [(ngModel)]="fuenteObj.ext_archivo_id"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione interesado</option>
+                        <option *ngFor="let archivo of archivos" [value]="archivo.id">
+                          {{ archivo.local_id }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/ext-archivo']"
+                      title="Ir a Repositorio de archivos">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="tipo_principal" class="form-label mb-0">Tipo principal</label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="tipo_principal"
+                        name="tipo_principal"
+                        [(ngModel)]="fuenteObj.tipo_principal"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione estado de disponibilidad</option>
+                        <option *ngFor="let tipo of tiposPrincipal" [value]="tipo.valor">
+                          {{ tipo.etiqueta }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="fecha_documento_fuente" class="form-label mb-0">Fecha de documento fuente</label>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Fecha de expedición del documento fuente.</mat-label>
+                            <input matInput [matDatepicker]="picker" [(ngModel)]="fuenteObj.fecha_documento_fuente" name="fecha_documento_fuente" placeholder="Seleccione una fecha">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                  </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (fuenteObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!fuenteForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!fuenteForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

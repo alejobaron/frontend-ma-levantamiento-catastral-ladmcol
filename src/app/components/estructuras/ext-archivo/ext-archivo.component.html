@@ -1,0 +1,190 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Repositorio de archivos</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-folder-open"></i> Agregar Repositorio de archivos
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Local ID</th>
+                    <th>Fecha de aceptación</th>
+                    <th>Datos</th>
+                    <th>Extracción</th>
+                    <th>Fecha de grabación</th>
+                    <th>Fecha de entrega</th>
+                    <th>Espacio de nombres</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of extArchivoArray; let i = index">
+                    <tr *ngFor="let item of extArchivoArray | filter: searchText : ['local_id', 'fecha_aceptacion', 'datos', 'extraccion','fecha_grabacion', 'fecha_entrega', 'fecha_entrega', 'espacio_de_nombres'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.local_id }}</td>
+                    <td>{{ item.fecha_aceptacion }}</td>
+                    <td>{{ item.datos }}</td>
+                    <td>{{ item.extraccion }}</td>
+                    <td>{{ item.fecha_grabacion }}</td>
+                    <td>{{ item.fecha_entrega }}</td>
+                    <td>{{ item.espacio_de_nombres }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
+        <pagination-controls (pageChange)="page = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
+    </div>
+
+   <!-- Formulario de Repositorio de archivos -->
+   <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+    <h5 class="text-center mb-3">Agregar / Editar Repositorio de archivos </h5>
+    <form #archivosForm="ngForm">
+        <div class="row">
+            <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="local_id" class="form-label mb-0">Local ID</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="extArchivoObj.local_id"
+                         id="local_id"
+                         name="local_id"
+                         class="form-control"
+                         placeholder="Ejemplo: A_001"
+                         required>
+                </div>
+              </div>
+
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="datos" class="form-label mb-0">Datos</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="extArchivoObj.datos"
+                         id="datos"
+                         name="datos"
+                         class="form-control"
+                         placeholder="Datos que contiene el documento.">
+                </div>
+              </div>
+              
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="fecha_aceptacion" class="form-label mb-0">Fecha de aceptación</label>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Fecha de aceptación</mat-label>
+                        <input matInput [matDatepicker]="picker" [(ngModel)]="extArchivoObj.fecha_aceptacion"  name="fecha_aceptacion" placeholder="Seleccione una fecha">
+                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+              </div>
+            </div>
+
+              
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="extraccion" class="form-label mb-0">Extracción</label>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Última fecha de extracción del documento</mat-label>
+                        <input matInput [matDatepicker]="picker1" [(ngModel)]="extArchivoObj.extraccion" name="extraccion" placeholder="Seleccione una fecha">
+                        <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                        <mat-datepicker #picker1></mat-datepicker>
+                    </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="fecha_grabacion" class="form-label mb-0">Fecha de grabación</label>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Fecha en la que el documento es aceptado en el sistema.</mat-label>
+                        <input matInput [matDatepicker]="picker2" [(ngModel)]="extArchivoObj.fecha_grabacion" name="fecha_grabacion" placeholder="Seleccione una fecha">
+                        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                        <mat-datepicker #picker2></mat-datepicker>
+                    </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="fecha_entrega" class="form-label mb-0">Fecha de entrega</label>
+                </div>
+                <div class="col-md-6">
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-label>Fecha en la que fue entregado el documento.</mat-label>
+                        <input matInput [matDatepicker]="picker3" [(ngModel)]="extArchivoObj.fecha_entrega" name="fecha_entrega" placeholder="Seleccione una fecha">
+                        <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                        <mat-datepicker #picker3></mat-datepicker>
+                    </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row align-items-center mb-3">
+                <div class="col-md-3">
+                  <label for="espacio_de_nombres" class="form-label mb-0">Espacio de nombres</label>
+                </div>
+                <div class="col-md-6">
+                  <input type="text"
+                         [(ngModel)]="extArchivoObj.espacio_de_nombres"
+                         id="espacio_de_nombres"
+                         name="espacio_de_nombres"
+                         class="form-control"
+                         placeholder="Identificador único global. Corresponde al atributo de la clase en LADM."
+                         required>
+                </div>
+              </div>
+        </div>
+
+        <div class="text-center mt-3">
+            @if (extArchivoObj.id == 0){
+                <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSaveExtArchivo()" [disabled]="!archivosForm.valid">
+                    <i class="fa-solid fa-save"></i> Guardar
+                </button>
+            }@else {
+                <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdateExtArchivo()" [disabled]="!archivosForm.valid">
+                    <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                </button>
+            }
+            <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                <i class="fa-solid fa-times"></i> Cancelar
+            </button>
+        </div>
+    </form>   
+
+</div>

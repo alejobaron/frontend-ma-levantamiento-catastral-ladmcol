@@ -1,0 +1,219 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Información de interesados</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-user-plus me-2"></i> 
+            <strong> Agregar Interesado</strong>
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-bordered table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ID Interesado</th>
+                    <th>Dirección</th>
+                    <th>Huella Dactilar</th>
+                    <th>Nombre</th>
+                    <th>Fotografía</th>
+                    <th>Firma</th>
+                    <th>Documento escaneado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of extInteresadoArray | filter: searchText : ['id_interesado', 'huella_dactilar', 'nombre', 'fotografia', 'firma', 'documento_escaneado', 'ext_direccion'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ item.id_interesado }}</td>
+                    <td>{{ item.ext_direccion }}</td>
+                    <td>{{ item.huella_dactilar }}</td>
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.fotografia }}</td>
+                    <td>{{ item.firma }}</td>
+                    <td>{{ item.documento_escaneado }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+     
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+        <div style="width: 33%;" class="text-start">
+        </div>
+      
+        <div class="d-flex justify-content-center" style="width: 33%;">
+          <pagination-controls
+            (pageChange)="page = $event"
+            previousLabel="Anterior"
+            nextLabel="Siguiente">
+          </pagination-controls>
+        </div>
+      
+        <div class="d-flex justify-content-end" style="width: 33%;">
+          <button
+            class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+            [routerLink]="['/col-interesado']">
+            <strong>Interesados (COL)  </strong>
+            <i class="fa-solid fa-circle-right me-1"></i>
+          </button>
+        </div>
+      </div>
+
+   <!-- Formulario de Interesado -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Interesado</h5>
+        <form #extInteresadoForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="id_interesado" class="form-label mb-0 fw-bold">ID Interesado <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="extInteresadoObj.id_interesado"
+                             id="id_interesado"
+                             name="id_interesado"
+                             class="form-control"
+                             placeholder="Ejemplo: INT_001"
+                             required>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="huella_dactilar" class="form-label mb-0">Huella sactilar</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="extInteresadoObj.huella_dactilar"
+                             id="huella_dactilar"
+                             name="huella_dactilar"
+                             class="form-control"
+                             placeholder="Imagen de la huella dactilar del interesado.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="nombre" class="form-label mb-0">Nombre</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="extInteresadoObj.nombre"
+                             id="nombre"
+                             name="nombre"
+                             class="form-control"
+                             placeholder="Nombre del interesado.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="direccion" class="form-label mb-0">Dirección</label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="direccion"
+                        name="direccion"
+                        placeholder="Seleccione dirección."
+                        [(ngModel)]="extInteresadoObj.ext_direccion">
+                        <option [ngValue]="null">Seleccione dirección</option>
+                        <option *ngFor="let direccion of direcciones" [ngValue]="direccion.id">
+                          {{ direccion.id_direccion}}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/ext-direccion']"
+                      title="Ir a Direcciones">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="fotografia" class="form-label mb-0">Fotografía</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="extInteresadoObj.fotografia"
+                             id="fotografia"
+                             name="fotografia"
+                             class="form-control"
+                             placeholder="Fotografía del interesado.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="firma" class="form-label mb-0">Firma</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="extInteresadoObj.firma"
+                             id="firma"
+                             name="firma"
+                             class="form-control"
+                             placeholder="Firma del interesado.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="documento_escaneado" class="form-label mb-0">Documento escaneado</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="extInteresadoObj.documento_escaneado"
+                             id="documento_escaneado"
+                             name="documento_escaneado"
+                             class="form-control"
+                             placeholder="Ruta de almacenamiento del documento escaneado del interesado.">
+                    </div>
+                  </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (extInteresadoObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSaveExtInteresado()" [disabled]="!extInteresadoForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                } @else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdateExtInteresado()" [disabled]="!extInteresadoForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

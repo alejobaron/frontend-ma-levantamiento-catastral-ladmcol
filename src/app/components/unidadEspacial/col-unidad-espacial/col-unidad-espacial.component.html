@@ -1,0 +1,233 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">UNIDAD ESPACIAL</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-layer-group"></i> Agregar Unidad Espacial
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>PK</th>
+                    <th>Área</th>
+                    <th>Dimensión</th>
+                    <th>Dirección</th>
+                    <th>Etiqueta</th>
+                    <th>Relación superficie</th>
+                    <th>Volumen</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of unidadEspacialArray | filter: searchText: ['id', 'area', 'dimension','etiqueta', 'etiqueta', 'relacion_superficie', 'volumen', 'geometria'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.area }}</td>
+                    <td>{{ item.dimension }}</td>
+                    <td>{{ item.ext_direccion_id }}</td>
+                    <td>{{ item.etiqueta }}</td>
+                    <td>{{ item.relacion_superficie }}</td>
+                    <td>{{ item.volumen }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+    <div style="width: 33%;"></div>
+  
+    <div class="d-flex justify-content-center" style="width: 33%;">
+      <pagination-controls
+        (pageChange)="page = $event"
+        previousLabel="Anterior"
+        nextLabel="Siguiente">
+      </pagination-controls>
+    </div>
+  
+    <div class="d-flex justify-content-end" style="width: 33%;">
+      <button
+        class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+        [routerLink]="['/terreno']">
+        <strong>Registrar terreno  </strong>
+        <i class="fa-solid fa-circle-right me-1"></i>
+      </button>
+    </div>
+    </div>
+
+
+   <!-- Formulario de Fuente -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Fuente Administativa COL</h5>
+        <form #unidadEspacialForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area" class="form-label mb-0">Área</label>
+                    </div>
+                    <div class="col-md-6">
+                        <select
+                            class="form-select"
+                            id="area"
+                            name="area"
+                            [(ngModel)]="unidadEspacialObj.area">
+                            <option [ngValue]="null" disabled selected>Seleccione identificador de área</option>
+                            <option *ngFor="let area of areas" [value]="area.id">
+                            {{ area.id_area_valor }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/area-valor']"
+                      title="Ir a Valor de áreas">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="dimension" class="form-label mb-0">Dimensión</label>
+                    </div>
+                    <div class="col-md-6">
+                        <select
+                        class="form-select"
+                        id="dimension"
+                        name="dimension"
+                        [(ngModel)]="unidadEspacialObj.dimension">
+                        <option [ngValue]="null" disabled selected>Seleccione la dimensión</option>
+                        <option *ngFor="let dimension of tiposdimension" [value]="dimension.valor">
+                          {{ dimension.etiqueta }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="ext_direccion_id" class="form-label mb-0">Dirección</label>
+                    </div>
+                    <div class="col-md-6">
+                        <select
+                            class="form-select"
+                            id="ext_direccion_id"
+                            name="ext_direccion_id"
+                            [(ngModel)]="unidadEspacialObj.ext_direccion_id">
+                            <option [ngValue]="null" disabled selected>Seleccione identificador de dirección</option>
+                            <option *ngFor="let direccion of direcciones" [value]="direccion.id">
+                            {{ direccion.id_direccion }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/ext-direccion']"
+                      title="Ir a direcciones">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="etiqueta" class="form-label mb-0">Etiqueta</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="unidadEspacialObj.etiqueta"
+                             id="etiqueta"
+                             name="etiqueta"
+                             class="form-control"
+                             placeholder="Ingrese Etiqueta.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="relacion_superficie" class="form-label mb-0">Relación superficie</label>
+                    </div>
+                    <div class="col-md-6">
+                        <select
+                        class="form-select"
+                        id="relacion_superficie"
+                        name="relacion_superficie"
+                        [(ngModel)]="unidadEspacialObj.relacion_superficie">
+                        <option [ngValue]="null" disabled selected>Seleccione relación de superficie</option>
+                        <option *ngFor="let relacion of tiposrelacionsuperficie" [value]="relacion.valor">
+                          {{ relacion.etiqueta }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="volumen" class="form-label mb-0">Volumen superficie</label>
+                    </div>
+                    <div class="col-md-6">
+                        <select
+                            class="form-select"
+                            id="volumen"
+                            name="volumen"
+                            [(ngModel)]="unidadEspacialObj.volumen">
+                            <option [ngValue]="null" disabled selected>Seleccione identificador de volumen</option>
+                            <option *ngFor="let volumen of volumenes" [value]="volumen.id">
+                            {{ volumen.id_volumen_valor }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/volumen-valor']"
+                      title="Ir a Valores de volumen">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+            </div>
+
+            <div class="text-center mt-3">
+                @if (unidadEspacialObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSaveUnidadEspacial()" [disabled]="!unidadEspacialForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!unidadEspacialForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

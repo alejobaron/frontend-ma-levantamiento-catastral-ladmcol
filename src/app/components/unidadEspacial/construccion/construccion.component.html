@@ -1,0 +1,279 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Construcción</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-building"></i> Agregar Construcción
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>PK</th>
+                    <th>ID Unidad Espacial</th>
+                    <th>Identificador</th>
+                    <th>Total Pisos</th>
+                    <th>Total Sótanos</th>
+                    <th>Total Mezanines</th>
+                    <th>Total Semisotanos</th>
+                    <th>Área Total Construcción</th>
+                    <th>Altura Total Construcción</th>
+                    <th>Geometría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of construccionArray | filter: searchText : ['unidad_espacial', 'identificador', 'total_pisos', 'total_sotanos', 'total_mezanines', 'total_semisotanos', 'area_total_construccion', 'altura_total_construccion', 'geometria_construccion'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.unidad_espacial }}</td>
+                    <td>{{ item.identificador }}</td>
+                    <td>{{ item.total_pisos }}</td>
+                    <td>{{ item.total_sotanos }}</td>
+                    <td>{{ item.total_mezanines }}</td>
+                    <td>{{ item.total_semisotanos }}</td>
+                    <td>{{ item.area_total_construccion }}</td>
+                    <td>{{ item.altura_total_construccion }}</td>
+                    <td>
+                      <button 
+                          class="btn btn-outline-primary btn-sm"
+                          (click)="openDialogFromRow(item)">
+                          <i class="fa-solid fa-map-location-dot"></i>
+                      </button>
+                  </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+   
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+      <div style="width: 33%;" class="text-start">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/terreno']">
+          <i class="fa-solid fa-circle-left ms-1"></i>
+          <strong> Terreno</strong>
+        </button>
+      </div>
+    
+      <div class="d-flex justify-content-center" style="width: 33%;">
+        <pagination-controls
+          (pageChange)="page = $event"
+          previousLabel="Anterior"
+          nextLabel="Siguiente">
+        </pagination-controls>
+      </div>
+    
+      <div class="d-flex justify-content-end" style="width: 33%;">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/caracteristicas-unidad-construccion']">
+          <strong>Caracteristicas unidad de construcción  </strong>
+          <i class="fa-solid fa-circle-right me-1"></i>
+        </button>
+      </div>
+    </div>
+
+   <!-- Formulario de Construcción -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Construcción</h5>
+        <form #construccionForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="unidad_espacial" class="form-label mb-0 fw-bold">ID Unidad Espacial <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6"> 
+                      <select
+                            class="form-select"
+                            id="unidad_espacial"
+                            name="unidad_espacial"
+                            [(ngModel)]="construccionObj.unidad_espacial"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione unidad espacial </option>
+                            <option *ngFor="let unidad of unidadesespaciales" [value]="unidad.id">
+                            {{ unidad.id }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/col-unidad-espacial']"
+                      title="Ir a Unidad espacial">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="identificador" class="form-label mb-0">Identificador</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="construccionObj.identificador"
+                             id="identificador"
+                             name="identificador"
+                             class="form-control"
+                             placeholder="Identificador de la construcción.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="total_pisos" class="form-label mb-0 fw-bold">Total Pisos <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="construccionObj.total_pisos"
+                             id="total_pisos"
+                             name="total_pisos"
+                             class="form-control"
+                             placeholder="Número total de pisos de la construcción."
+                             required>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="total_sotanos" class="form-label mb-0">Total Sótanos</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="construccionObj.total_sotanos"
+                             id="total_sotanos"
+                             name="total_sotanos"
+                             class="form-control"
+                             placeholder="Número total de sótanos de la construcción.">
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="total_mezanines" class="form-label mb-0">Total Mezanines</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="construccionObj.total_mezanines"
+                             id="total_mezanines"
+                             name="total_mezanines"
+                             class="form-control"
+                             placeholder="Número total de mezanines de la construcción.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="total_semisotanos" class="form-label mb-0">Total Semisotanos</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="construccionObj.total_semisotanos"
+                             id="total_semisotanos"
+                             name="total_semisotanos"
+                             class="form-control"
+                             placeholder="Número total de semisótanos de la construcción.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area_total_construccion" class="form-label mb-0 fw-bold">Área Total Construcción <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="construccionObj.area_total_construccion"
+                             id="area_total_construccion"
+                             name="area_total_construccion"
+                             class="form-control"
+                             placeholder="Área total construida."
+                             required>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="altura_total_construccion" class="form-label mb-0">Altura Total Construcción</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="construccionObj.altura_total_construccion"
+                             id="altura_total_construccion"
+                             name="altura_total_construccion"
+                             class="form-control"
+                             placeholder="Altura total de la construcción."
+                             required>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="terreno_geometria" class="form-label mb-0 fw-bold">Geometría <span class="text-danger">*</span></label>
+                    </div>
+                  
+                    <div class="col-md-6">
+                      <div class="input-group">
+                        <input type="text"
+                               [(ngModel)]="construccionObj.construccion_geometria"
+                               id="construccion_geometria"
+                               name="construccion_geometria"
+                               class="form-control"
+                               placeholder="Coordenadas WKT"
+                               readonly>
+                  
+                        <button type="button"
+                                class="btn btn-primary btn-sm px-3 shadow-sm"
+                                (click)="openDialog()">
+                          <i class="fa-solid fa-earth-americas"></i>
+                          {{ construccionObj.id == 0 ? 'Crear Geometría' : 'Editar Geometría' }}
+                        </button>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (construccionObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!construccionForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!construccionForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+

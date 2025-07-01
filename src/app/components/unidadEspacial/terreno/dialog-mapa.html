@@ -1,0 +1,24 @@
+<mat-dialog-content>
+  <app-geometria 
+    [modo]="modo"
+    [geometriaExistente]="geometria"
+    (enviar)="actualizarGeometria($event)">
+  </app-geometria>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+
+  <button *ngIf="modo === 'editar'" mat-button (click)="guardarCambios()" color="accent">
+    <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios
+  </button>
+
+  <button mat-button (click)="aceptar()" color="primary">
+    <i class="fa-solid fa-check"></i> Aceptar
+  </button>
+
+  <button *ngIf="modo === 'editar'" mat-button (click)="cancelar()" color="warn">
+    <i class="fa-solid fa-times"></i> Cancelar
+  </button>
+</mat-dialog-actions>
+
+

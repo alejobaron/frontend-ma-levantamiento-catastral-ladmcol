@@ -1,0 +1,249 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Contacto de visita</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-user-plus"></i>
+            <strong> Agregar contacto de visita</strong>
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>PK</th>
+                    <th>Datos adicionales LC</th>
+                    <th>Nombre y apellidos de quien atendió</th>
+                    <th>Tipo documento</th>
+                    <th>Número de documento</th>
+                    <th>Domicilio notificaciones</th>
+                    <th>Celular</th>
+                    <th>Correo Electronico</th>
+                    <th>Autoriza Notificaciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of contactoVisitaArray | filter: searchText : ['datos_adicionales','nombre_apellidos_quien_atendio','tipo_documento_quien_atendio','numero_documento_quien_atendio','domicilio_notificaciones','celular','correo_electronio', 'autoriza_notificaciones'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index"> 
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.datos_adicionales }}</td>
+                    <td>{{ item.nombre_apellidos_quien_atendio }}</td>
+                    <td>{{ item.tipo_documento_quien_atendio }}</td>
+                    <td>{{ item.numero_documento_quien_atendio }}</td>
+                    <td>{{ item.domicilio_notificaciones }}</td>
+                    <td>{{ item.celular }}</td>
+                    <td>{{ item.correo_electronio }}</td>
+                    <td>
+                        <i *ngIf="item.autoriza_notificaciones" class="fa-solid fa-check text-success"></i>
+                        <i *ngIf="!item.autoriza_notificaciones" class="fa-solid fa-times text-danger"></i>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+     
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+      <div style="width: 33%;" class="text-start">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/datos-adicionales-levantamiento-catastral']">
+          <i class="fa-solid fa-circle-left ms-1"></i>
+          <strong> Datos adicionales L.C</strong>
+        </button>
+      </div>
+    
+      <div class="d-flex justify-content-center" style="width: 33%;">
+        <pagination-controls
+          (pageChange)="page = $event"
+          previousLabel="Anterior"
+          nextLabel="Siguiente">
+        </pagination-controls>
+      </div>
+    
+      <div class="d-flex justify-content-end" style="width: 33%;">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/drr']">
+          <strong>DRR  </strong>
+          <i class="fa-solid fa-circle-right me-1"></i>
+        </button>
+      </div>
+    </div>
+
+   <!-- Formulario de Contacto de visita -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Contacto de visita</h5>
+        <form #contactoVisitaForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="datos_adicionales" class="form-label mb-0 fw-bold">Datos adicionales LC <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="datos_adicionales"
+                        name="datos_adicionales"
+                        [(ngModel)]="contactoVisitaObj.datos_adicionales"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione dato adicional del LC</option>
+                        <option *ngFor="let dato of datosAdicionalesLevantamientoCatastral" [value]="dato.id">
+                          {{ dato.id }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/datos-adicionales-levantamiento-catastral']"
+                      title="Ir a Datos adicionales L.C.">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="nombre_apellidos_quien_atendio" class="form-label mb-0 fw-bold">Nombre y apellidos de quien atendió <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="contactoVisitaObj.nombre_apellidos_quien_atendio"
+                             id="nombre_apellidos_quien_atendio"
+                             name="nombre_apellidos_quien_atendio"
+                             class="form-control"
+                             placeholder="Nombres y apellidos de la persona encargada de atender la visita."
+                             required>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="tipo_documento_quien_atendio" class="form-label mb-0">Tipo documento</label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                            class="form-select"
+                            id="tipo_documento_quien_atendio"
+                            name="tipo_documento_quien_atendio"
+                            [(ngModel)]="contactoVisitaObj.tipo_documento_quien_atendio"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione una opción</option>
+                            <option *ngFor="let tipo of tiposDocumento" [value]="tipo.valor">
+                                {{ tipo.etiqueta }}
+                            </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="numero_documento_quien_atendio" class="form-label mb-0">Número de documento</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="contactoVisitaObj.numero_documento_quien_atendio"
+                             id="numero_documento_quien_atendio"
+                             name="numero_documento_quien_atendio"
+                             class="form-control"
+                             placeholder="Ejemplo: 12345678">
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="domicilio_notificaciones" class="form-label mb-0">Domicilio notificaciones</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="contactoVisitaObj.domicilio_notificaciones"
+                             id="domicilio_notificaciones"
+                             name="domicilio_notificaciones"
+                             class="form-control"
+                             placeholder="Domicilio para notificar.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="celular" class="form-label mb-0">Celular</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="contactoVisitaObj.celular"
+                             id="celular"
+                             name="celular"
+                             class="form-control"
+                             placeholder="Número de celular de la persona que atendió la visita">
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="correo_electronio" class="form-label mb-0">Correo Electronico</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="contactoVisitaObj.correo_electronio"
+                             id="correo_electronio"
+                             name="correo_electronio"
+                             class="form-control"
+                             placeholder="Correo electronico de la persona que atendió la visita.">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <div class="form-check">
+                      <label class="form-check-label" for="autoriza_notificaciones">Autoriza Notificaciones</label>
+                      <input type="checkbox" class="form-check-input md-3" id="autoriza_notificaciones"
+                             [(ngModel)]="contactoVisitaObj.autoriza_notificaciones" name="autoriza_notificaciones">
+                    </div>
+                  </div>
+                  
+
+            </div>
+
+            <div class="text-center mt-3">
+                @if (contactoVisitaObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!contactoVisitaForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!contactoVisitaForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

@@ -1,0 +1,127 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Novedad número predial</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-hashtag"></i> Agregar novedad número predial
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ID Novedad Número Predial</th>
+                    <th>Número predial</th>
+                    <th>Tipo de novedad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of novedadNumeroPredialArray | filter: searchText : ['id_novedad_numero_predial', 'numero_predial', 'tipo_novedad'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id_novedad_numero_predial }}</td>
+                    <td>{{ item.numero_predial }}</td>
+                    <td>{{ item.tipo_novedad }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center mt-3">
+        <pagination-controls (pageChange)="page = $event" previousLabel="Anterior" nextLabel="Siguiente"></pagination-controls>
+    </div>
+
+   <!-- Formulario de Novedad número predial -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Novedad número predial</h5>
+        <form #novedadNumeroPredialForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="id_novedad_numero_predial" class="form-label mb-0">ID Novedad Número Predial</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="novedadNumeroPredialObj.id_novedad_numero_predial"
+                             id="id_novedad_numero_predial"
+                             name="id_novedad_numero_predial"
+                             class="form-control"
+                             placeholder="Ejemplo: NNP_001"
+                             required>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="numero_predial" class="form-label mb-0">Número predial</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text" maxlength="30" minlength="30" pattern="\d{30}"
+                             [(ngModel)]="novedadNumeroPredialObj.numero_predial"
+                             id="numero_predial"
+                             name="numero_predial"
+                             class="form-control"
+                             placeholder="Código predial nacional de 30 dígitos"
+                             required>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="tipo_novedad" class="form-label mb-0">Tipo de novedad</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="novedadNumeroPredialObj.tipo_novedad"
+                             id="tipo_novedad"
+                             name="tipo_novedad"
+                             class="form-control"
+                             placeholder="Ejemplo: Englobe"
+                             required>
+                    </div>
+                  </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (novedadNumeroPredialObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSaveNovedadNumeroPredial()" [disabled]="!novedadNumeroPredialForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdateNovedadNumeroPredial()" [disabled]="!novedadNumeroPredialForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+

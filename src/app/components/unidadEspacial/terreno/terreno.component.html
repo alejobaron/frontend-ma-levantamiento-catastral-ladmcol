@@ -1,0 +1,179 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">TERRENO</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-layer-group"></i> Agregar Terreno
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ID Unidad Espacial</th>
+                    <th>Área de terreno</th>
+                    <th>Geometría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of terrenoArray | filter: searchText: ['unidad_espacial', 'area_terreno', 'geometria_terreno'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ item.unidad_espacial }}</td>
+                    <td>{{ item.area_terreno }}</td>
+                    <td>
+                        <button 
+                            class="btn btn-outline-primary btn-sm"
+                            (click)="openDialogFromRow(item)">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+      <div style="width: 33%;" class="text-start">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/col-unidad-espacial']">
+          <i class="fa-solid fa-circle-left ms-1"></i>
+          <strong> Unidad Espacial</strong>
+        </button>
+      </div>
+    
+      <div class="d-flex justify-content-center" style="width: 33%;">
+        <pagination-controls
+          (pageChange)="page = $event"
+          previousLabel="Anterior"
+          nextLabel="Siguiente">
+        </pagination-controls>
+      </div>
+    
+      <div class="d-flex justify-content-end" style="width: 33%;">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/construccion']">
+          <strong>Construcciones  </strong>
+          <i class="fa-solid fa-circle-right me-1"></i>
+        </button>
+      </div>
+    </div>
+
+   <!-- Formulario de Terreno -->
+   <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Terreno</h5>
+        <form #terrenoForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                    <label for="unidad_espacial" class="form-label mb-0 fw-bold">ID Unidad Espacial <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                        <select
+                            class="form-select"
+                            id="unidad_espacial"
+                            name="unidad_espacial"
+                            [(ngModel)]="terrenoObj.unidad_espacial"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione unidad espacial</option>
+                            <option *ngFor="let unidad of unidadesespaciales" [value]="unidad.id">
+                            {{ unidad.id }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/col-unidad-espacial']"
+                      title="Ir a Unidad espacial">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                </div>
+                
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                    <label for="area_terreno" class="form-label mb-0 fw-bold">Área de terreno <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                    <input type="text"
+                            [(ngModel)]="terrenoObj.area_terreno"
+                            id="area_terreno"
+                            name="area_terreno"
+                            class="form-control"
+                            placeholder="Área total del terreno resultante del levantamiento catastral."
+                            required>
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="terreno_geometria" class="form-label mb-0 fw-bold">Geometría <span class="text-danger">*</span></label>
+                    </div>
+                  
+                    <div class="col-md-6">
+                      <div class="input-group">
+                        <input type="text"
+                               [(ngModel)]="terrenoObj.terreno_geometria"
+                               id="terreno_geometria"
+                               name="terreno_geometria"
+                               class="form-control"
+                               placeholder="Coordenadas WKT"
+                               readonly>
+                  
+                        <button type="button"
+                                class="btn btn-primary btn-sm px-3 shadow-sm"
+                                (click)="openDialog()">
+                          <i class="fa-solid fa-earth-americas"></i>
+                          {{ terrenoObj.id == 0 ? 'Crear Geometría' : 'Editar Geometría' }}
+                        </button>
+                      </div>
+                    </div>
+                </div>
+                  
+            </div>
+
+            <div class="text-center mt-3">
+                @if (terrenoObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!terrenoForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!terrenoForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

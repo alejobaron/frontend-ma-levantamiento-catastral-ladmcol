@@ -1,0 +1,247 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Dato adicional de levantamiento catastral</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-pen-to-square"></i> 
+            <strong> Agregar Dato adicional de levantamiento catastral</strong>
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>PK</th>
+                    <th>Predio Asociado</th>
+                    <th>Área registral (m²)</th>
+                    <th>Novedad números prediales</th>
+                    <th>Novedad FMI</th>
+                    <th>Fecha de visita</th>
+                    <th>Resultado de la visita</th>
+                    <th>Observaciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of datoAdicionlLevantamientoCatastralArray | filter: searchText : ['predio', 'area_registral_m2', 'novedad_numeros_prediales', 'novedad_fmi', 'fecha_visita_predial', 'resultado_visita'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.predio }}</td>
+                    <td>{{ item.area_registral_m2 }}</td>
+                    <td>{{ item.novedad_numeros_prediales }}</td>
+                    <td>{{ item.novedad_fmi }}</td>
+                    <td>{{ item.fecha_visita_predial }}</td>
+                    <td>{{ item.resultado_visita }}</td>
+                    <td>{{ item.observaciones }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    
+    <div class="d-flex justify-content-between align-items-center mt-3">
+
+      <div style="width: 33%;" class="text-start">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/datos-phcondominio']">
+          <i class="fa-solid fa-circle-left ms-1"></i>
+          <strong> Datos PH-Condominio</strong>
+        </button>
+      </div>
+    
+      <div class="d-flex justify-content-center" style="width: 33%;">
+        <pagination-controls
+          (pageChange)="page = $event"
+          previousLabel="Anterior"
+          nextLabel="Siguiente">
+        </pagination-controls>
+      </div>
+    
+      <div class="d-flex justify-content-end" style="width: 33%;">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/contacto-visita']">
+          <strong>Contacto visita  </strong>
+          <i class="fa-solid fa-circle-right me-1"></i>
+        </button>
+      </div>
+    </div>
+
+   <!-- Formulario de Dato adicional de levantamiento catastral -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Dato adicional de levantamiento catastral</h5>
+        <form #datosAdicionalesLevantamientoCatastralForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="predio" class="form-label mb-0 fw-bold">Predio Asociado <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                       <select
+                        class="form-select"
+                        id="predio"
+                        name="predio"
+                        [(ngModel)]="datoAdicionlLevantamientoCatastralObj.predio"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione predio</option>
+                        <option *ngFor="let predio of predios" [value]="predio.id">
+                          {{ predio.id_operacion }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/predio']"
+                      title="Ir a Predio">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area_registral_m2" class="form-label mb-0">Área registral (m²)</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datoAdicionlLevantamientoCatastralObj.area_registral_m2"
+                             id="area_registral_m2"
+                             name="area_registral_m2"
+                             class="form-control"
+                             placeholder="Área consignada en el CTL.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="novedad_numeros_prediales" class="form-label mb-0">Novedad números prediales</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datoAdicionlLevantamientoCatastralObj.novedad_numeros_prediales"
+                             id="novedad_numeros_prediales"
+                             name="novedad_numeros_prediales"
+                             class="form-control"
+                             placeholder="Identificador de la novedad.">
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/ext-novedad-numero-predial']"
+                      title="Ir a Novedad número predial">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="novedad_fmi" class="form-label mb-0">Novedad FMI</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datoAdicionlLevantamientoCatastralObj.novedad_fmi"
+                             id="novedad_fmi"
+                             name="novedad_fmi"
+                             class="form-control"
+                             placeholder="Identificador de la novedad.">
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/ext-novedad-fmi']"
+                      title="Ir a novedad FMI">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="fecha_visita_predial" class="form-label mb-0">Fecha de visita</label>
+                    </div>
+                    <div class="col-md-6">
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-label>Fecha de la visita en campo al predio.</mat-label>
+                            <input matInput [matDatepicker]="picker" [(ngModel)]="datoAdicionlLevantamientoCatastralObj.fecha_visita_predial" name="fecha_visita_predial" placeholder="Seleccione una fecha">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="resultado_visita" class="form-label mb-0 fw-bold">Resultado de la visita <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                            class="form-select"
+                            id="resultado_visita"
+                            name="resultado_visita"
+                            [(ngModel)]="datoAdicionlLevantamientoCatastralObj.resultado_visita"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione una opción</option>
+                            <option *ngFor="let tipo of tiposResultadoVisita" [value]="tipo.valor">
+                                {{ tipo.etiqueta }}
+                            </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="observaciones" class="form-label mb-0">Observaciones</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datoAdicionlLevantamientoCatastralObj.observaciones"
+                             id="observaciones"
+                             name="observaciones"
+                             class="form-control"
+                             placeholder="Observaciones generales respecto al predio.">
+                    </div>
+                  </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (datoAdicionlLevantamientoCatastralObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!datosAdicionalesLevantamientoCatastralForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!datosAdicionalesLevantamientoCatastralForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

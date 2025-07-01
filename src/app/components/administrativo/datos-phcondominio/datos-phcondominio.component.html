@@ -1,0 +1,262 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Datos de PH o Condominio</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-building"></i> 
+            <strong> Agregar Datos de PH o Condominio</strong>
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>PK</th>
+                    <th>Predio asociado</th>
+                    <th>Área total de terreno</th>
+                    <th>Área total de terreno privada</th>
+                    <th>Área total de terreno común</th>
+                    <th>Área total construida</th>
+                    <th>Área total construida privada</th>
+                    <th>Área total construida común</th>
+                    <th>Número de torres</th>
+                    <th>Total de unidades privadas</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of datosPHCondominioArray | filter: searchText : ['predio', 'area_total_terreno','area_total_terreno_privada','area_total_comun','area_total_construida','area_total_construida_privada','area_total_construida_comun','numero_torres','total_unidades_privadas'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.predio }}</td>
+                    <td>{{ item.area_total_terreno }}</td>
+                    <td>{{ item.area_total_terreno_privada }}</td>
+                    <td>{{ item.area_total_comun }}</td>
+                    <td>{{ item.area_total_construida }}</td>
+                    <td>{{ item.area_total_construida_privada }}</td>
+                    <td>{{ item.area_total_construida_comun }}</td>
+                    <td>{{ item.numero_torres }}</td>
+                    <td>{{ item.total_unidades_privadas }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+     
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+      <div style="width: 33%;" class="text-start">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/predio-copropiedad']">
+          <i class="fa-solid fa-circle-left ms-1"></i>
+          <strong> Predio-copropiedad</strong>
+        </button>
+      </div>
+
+      <div class="d-flex justify-content-center" style="width: 33%;">
+        <pagination-controls
+          (pageChange)="page = $event"
+          previousLabel="Anterior"
+          nextLabel="Siguiente">
+        </pagination-controls>
+      </div>
+    
+      <div class="d-flex justify-content-end" style="width: 33%;">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/datos-adicionales-levantamiento-catastral']">
+          <strong> Datos adicionales L.C.  </strong>
+          <i class="fa-solid fa-circle-right me-1"></i>
+        </button>
+      </div>
+    </div>
+
+   <!-- Formulario de Datos de PH o Condominio -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Datos de PH o Condominio</h5>
+        <form #datosPHCondominioForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="predio" class="form-label mb-0 fw-bold">Predio asociado <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="predio"
+                        name="predio"
+                        [(ngModel)]="datosPHCondominioObj.predio"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione predio</option>
+                        <option *ngFor="let predio of predios" [value]="predio.id">
+                          {{ predio.id_operacion }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/predio']"
+                      title="Ir a Predio">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area_total_terreno" class="form-label mb-0">Área total de terreno</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datosPHCondominioObj.area_total_terreno"
+                             id="area_total_terreno"
+                             name="area_total_terreno"
+                             class="form-control"
+                             placeholder="Área total del terreno del PH o Condominio Matriz.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area_total_terreno_privada" class="form-label mb-0">Área total de terreno privada</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datosPHCondominioObj.area_total_terreno_privada"
+                             id="area_total_terreno_privada"
+                             name="area_total_terreno_privada"
+                             class="form-control"
+                             placeholder="Área total privada del terreno del PH o Condominio Matriz">
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area_total_comun" class="form-label mb-0">Área total de terreno común</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datosPHCondominioObj.area_total_comun"
+                             id="area_total_comun"
+                             name="area_total_comun"
+                             class="form-control"
+                             placeholder="Área total de terreno común del PH o Condomino Matriz.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area_total_construida" class="form-label mb-0">Área total construida</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datosPHCondominioObj.area_total_construida"
+                             id="area_total_construida"
+                             name="area_total_construida"
+                             class="form-control"
+                             placeholder="Área total de construida del PH o Condominio Matriz">
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area_total_construida_privada" class="form-label mb-0">Área total construida privada</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datosPHCondominioObj.area_total_construida_privada"
+                             id="area_total_construida_privada"
+                             name="area_total_construida_privada"
+                             class="form-control"
+                             placeholder="Área total construida privada del PH o Condominio Matriz.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area_total_construida_comun" class="form-label mb-0">Área total construida común</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datosPHCondominioObj.area_total_construida_comun"
+                             id="area_total_construida_comun"
+                             name="area_total_construida_comun"
+                             class="form-control"
+                             placeholder="Área total construida común del PH o Condominio Matriz">
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="numero_torres" class="form-label mb-0">Número de torres</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datosPHCondominioObj.numero_torres"
+                             id="numero_torres"
+                             name="numero_torres"
+                             class="form-control"
+                             placeholder="Número de torrer en el Ph o Condominio.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="total_unidades_privadas" class="form-label mb-0">Total de unidades privadas</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="datosPHCondominioObj.total_unidades_privadas"
+                             id="total_unidades_privadas"
+                             name="total_unidades_privadas"
+                             class="form-control"
+                             placeholder="Total de unidades privadas en el PH o Condominio.">
+                    </div>
+                  </div>
+
+
+            </div>
+
+            <div class="text-center mt-3">
+                @if (datosPHCondominioObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!datosPHCondominioForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!datosPHCondominioForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

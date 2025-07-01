@@ -1,0 +1,184 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Predio Copropiedad</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-house-chimney-window "></i> 
+            <strong> Agregar Predio Copropiedad</strong>
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>PK</th>
+                    <th>Predio matriz</th>
+                    <th>Unidad predial</th>
+                    <th>Coeficiente</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of predioCopropiedadArray | filter: searchText : ['predio_matriz', 'unidad_predial', 'coeficiente'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.predio_matriz }}</td>
+                    <td>{{ item.unidad_predial }}</td>
+                    <td>{{ item.coeficiente }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+     
+    <div class="d-flex justify-content-between align-items-center mt-3">
+
+        <div style="width: 33%;" class="text-start">
+          <button
+            class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+            [routerLink]="['/predio']">
+            <i class="fa-solid fa-circle-left ms-1"></i>
+            <strong> Predio</strong>
+          </button>
+        </div>
+      
+        <div class="d-flex justify-content-center" style="width: 33%;">
+          <pagination-controls
+            (pageChange)="page = $event"
+            previousLabel="Anterior"
+            nextLabel="Siguiente">
+          </pagination-controls>
+        </div>
+      
+        <div class="d-flex justify-content-end" style="width: 33%;">
+          <button
+            class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+            [routerLink]="['/datos-phcondominio']">
+            <strong>Datos PH Condominio  </strong>
+            <i class="fa-solid fa-circle-right me-1"></i>
+          </button>
+        </div>
+      </div>
+
+   <!-- Formulario de Predio Copropiedad -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Predio Copropiedad</h5>
+        <form #predioCopropiedadForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="predio_matriz" class="form-label mb-0 fw-bold">Predio matriz <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="predio_matriz"
+                        name="predio_matriz"
+                        [(ngModel)]="predioCopropiedadObj.predio_matriz"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione predio matriz</option>
+                        <option *ngFor="let predio of predios" [value]="predio.id">
+                          {{ predio.id_operacion }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/predio']"
+                      title="Ir a Predio">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="unidad_predial" class="form-label mb-0 fw-bold">Unidad predial<span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="unidad_predial"
+                        name="unidad_predial"
+                        [(ngModel)]="predioCopropiedadObj.unidad_predial"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione la unidad predial</option>
+                        <option *ngFor="let predio of predios" [value]="predio.id">
+                          {{ predio.id_operacion }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/unidad-administrativa-basica']"
+                      title="Ir a Unidad Administrativa Básica">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="coeficiente" class="form-label mb-0">Coeficiente</label>
+                    </div>
+                    <div class="col-md-6">
+                        <input type="number"
+                               [(ngModel)]="predioCopropiedadObj.coeficiente"
+                               id="coeficiente"
+                               name="coeficiente"
+                               class="form-control"
+                               [ngClass]="{'is-invalid': predioCopropiedadObj.coeficiente > 100}"
+                               placeholder="Coeficiente de copropiedad de la unidad predial."
+                               min="0"
+                               max="100"
+                               step="0.01"
+                               required>
+                        <div *ngIf="predioCopropiedadObj.coeficiente > 100" class="invalid-feedback">
+                          El coeficiente no puede ser mayor a 100.
+                        </div>
+                      </div>
+                  </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (predioCopropiedadObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!predioCopropiedadForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!predioCopropiedadForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

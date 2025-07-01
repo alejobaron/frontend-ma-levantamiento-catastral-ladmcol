@@ -1,0 +1,244 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Caracteristicas Unidad de Construcción</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-file-invoice"></i> Agregar Caracteristicas Unidad de Construcción
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Identificador</th>
+                    <th>Tipo de unidad de construcción</th>
+                    <th>Total de plantas</th>
+                    <th>Uso</th>
+                    <th>Año de construcción</th>
+                    <th>Área construida</th>
+                    <th>Área privada construida</th>
+                    <th>Observaciones</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of caracteristicaUnidadConstruccionArray | filter: searchText : ['identificador', 'tipo_unidad_construccion', 'total_plantas', 'uso', 'anio_construccion', 'area_construida', 'area_privada_construida', 'observaciones'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.identificador }}</td>
+                    <td>{{ item.tipo_unidad_construccion }}</td>
+                    <td>{{ item.total_plantas }}</td>
+                    <td>{{ item.uso}}</td>
+                    <td>{{ item.anio_construccion }}</td>
+                    <td>{{ item.area_construida }}</td>
+                    <td>{{ item.area_privada_construida }}</td>
+                    <td>{{ item.observaciones }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+      <div style="width: 33%;" class="text-start">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/construccion']">
+          <i class="fa-solid fa-circle-left ms-1"></i>
+          <strong> Construcción</strong>
+        </button>
+      </div>
+    
+      <div class="d-flex justify-content-center" style="width: 33%;">
+        <pagination-controls
+          (pageChange)="page = $event"
+          previousLabel="Anterior"
+          nextLabel="Siguiente">
+        </pagination-controls>
+      </div>
+    
+      <div class="d-flex justify-content-end" style="width: 33%;">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/unidad-construccion']">
+          <strong>Unidad de construcción  </strong>
+          <i class="fa-solid fa-circle-right me-1"></i>
+        </button>
+      </div>
+    </div>
+
+   <!-- Formulario de Caracteristicas Unidad de Construcción -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Caracteristicas Unidad de </h5>
+        <form #caracteristicaUnidadConstruccionForm="ngForm" class="w-20">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="identificador" class="form-label mb-0 fw-bold">Identificador <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="caracteristicaUnidadConstruccionObj.identificador"
+                             id="identificador"
+                             name="identificador"
+                             class="form-control"
+                             placeholder="Identificador de caracteristica de unidad de construcción."
+                             required>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="tipo_unidad_construccion" class="form-label mb-0 fw-bold">Tipo de unidad de construcción <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                            class="form-select"
+                            id="tipo_unidad_construccion"
+                            name="tipo_unidad_construccion"
+                            [(ngModel)]="caracteristicaUnidadConstruccionObj.tipo_unidad_construccion"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione el tipo de unidad espacial</option>
+                            <option *ngFor="let tipo of tiposunidadconstruccion" [value]="tipo.valor">
+                            {{ tipo.etiqueta }}
+                            </option>
+                        </select>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="total_plantas" class="form-label mb-0">Total de plantas</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="caracteristicaUnidadConstruccionObj.total_plantas"
+                             id="total_plantas"
+                             name="total_plantas"
+                             class="form-control"
+                             placeholder="Número total de plantas en la unidad de construcción."
+                             required>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="uso" class="form-label mb-0 fw-bold">Uso <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                            class="form-select"
+                            id="uso"
+                            name="uso"
+                            [(ngModel)]="caracteristicaUnidadConstruccionObj.uso"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione el tipo de unidad espacial</option>
+                            <option *ngFor="let uso of tiposusounidadconstruccion" [value]="uso.valor">
+                            {{ uso.etiqueta }}
+                            </option>
+                        </select>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="anio_construccion" class="form-label mb-0">Año de construcción</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="caracteristicaUnidadConstruccionObj.anio_construccion"
+                             id="anio_construccion"
+                             name="anio_construccion"
+                             class="form-control"
+                             placeholder="Año de construcción de la unidad constructiva.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area_construida" class="form-label mb-0 fw-bold">Área construida <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="caracteristicaUnidadConstruccionObj.area_construida"
+                             id="area_construida"
+                             name="area_construida"
+                             class="form-control"
+                             placeholder="Área total construida en la unidad de construcción.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area_privada_construida" class="form-label mb-0">Área privada construida</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="caracteristicaUnidadConstruccionObj.area_privada_construida"
+                             id="area_privada_construida"
+                             name="area_privada_construida"
+                             class="form-control"
+                             placeholder="Área total privada de la unidad de construcción para los predios en régimen de PH."
+                             required>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="observaciones" class="form-label mb-0">Observaciones</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="caracteristicaUnidadConstruccionObj.observaciones"
+                             id="observaciones"
+                             name="observaciones"
+                             class="form-control"
+                             placeholder="Observaciones generales respecto de la unidad de construcción.">
+                    </div>
+                  </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (caracteristicaUnidadConstruccionObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!caracteristicaUnidadConstruccionForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!caracteristicaUnidadConstruccionForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+

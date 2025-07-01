@@ -1,0 +1,101 @@
+<nav class="navbar navbar-expand-sm navbar-dark bg-custom">
+
+  <div class="container-fluid">
+    <a
+  class="navbar-brand d-flex flex-column align-items-center text-white"
+  href="javascript:void(0)"
+  routerLink="login"
+  style="line-height: 1.2;">
+  <span class="fw-bold fs-4">GEO-CAT</span>
+  <span class="fst-italic opacity-75" style="font-size: 0.8rem;">Geomática & Catastro</span>
+</a>
+
+    
+    <div class="collapse navbar-collapse" id="mynavbar">
+      <ul class="navbar-nav me-auto">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            ESTRUCTURA
+          </a>
+          
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" routerLink="ext-direccion">Direcciones</a></li>
+            <li><a class="dropdown-item" routerLink="ext-novedad-numero-predial">Novedades número predial</a></li>
+            <li><a class="dropdown-item" routerLink="ext-novedad-fmi">Novedades FMI</a></li>
+            <li><a class="dropdown-item" routerLink="ext-interesado">Información de interesados</a></li>
+            <li><a class="dropdown-item" routerLink="ext-archivo">Repositorios de archivos</a></li>
+            <li><a class="dropdown-item" routerLink="area-valor">Valores de área</a></li>
+            <li><a class="dropdown-item" routerLink="volumen-valor">Valores de volumen</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            ADMINISTRATIVO
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" routerLink="unidad-administrativa-basica">Unidad Administrativa Básica</a></li>
+            <li><a class="dropdown-item" routerLink="predio">Predio</a></li>
+            <li><a class="dropdown-item" routerLink="predio-copropiedad">Predio-Copropiedad</a></li>
+            <li><a class="dropdown-item" routerLink="datos-phcondominio">Datos PH-Condominio</a></li>
+            <li><a class="dropdown-item" routerLink="datos-adicionales-levantamiento-catastral">Datos Adicionales Levantamiento Catastral</a></li>
+            <li><a class="dropdown-item" routerLink="contacto-visita">Contacto de Visita</a></li>
+            <li><a class="dropdown-item" routerLink="drr">DRR</a></li>
+            <li><a class="dropdown-item" routerLink="derecho">Derechos</a></li>
+          </ul>
+        </li> 
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            INTERESADOS
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" routerLink="ext-interesado">Información de interesados</a></li>
+            <li><a class="dropdown-item" routerLink="col-interesado">Interesados (COL)</a></li>
+            <li><a class="dropdown-item" routerLink="cr-interesado">Interesados (CR)</a></li>
+            <li><a class="dropdown-item" routerLink="lc-interesado-contacto">Contactos de los interesados</a></li>
+            <li><a class="dropdown-item" routerLink="col-agrupacion-interesados">Agrupaciones de interesados (COL)</a></li>
+            <li><a class="dropdown-item" routerLink="col-miembros">Miembros</a></li>
+            <li><a class="dropdown-item" routerLink="cr-agrupacion-interesados">Agrupaciones de interesados (CR)</a></li>
+          </ul>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            SOPORTE DOCUMENTAL
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" routerLink="fuente">Fuente</a></li>
+            <li><a class="dropdown-item" routerLink="col-fuente-administrativa">Fuente Administrativa (COL)</a></li>
+            <li><a class="dropdown-item" routerLink="lc-fuente-administrativa">Fuente Administrativa (LC)</a></li>
+            <li><a class="dropdown-item" routerLink="col-fuente-espacial">Fuente Espacial (COL)</a></li>
+            <li><a class="dropdown-item" routerLink="cr-fuente-espacial">Fuente Espacial (CR)</a></li>
+          </ul>
+        </li>  
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            UNIDAD ESPACIAL
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" routerLink="col-unidad-espacial">Unidades Espaciales</a></li>
+            <li><a class="dropdown-item" routerLink="terreno">Terrenos</a></li>
+            <li><a class="dropdown-item" routerLink="construccion">Construcciones</a></li>
+            <li><a class="dropdown-item" routerLink="caracteristicas-unidad-construccion">Caracteristicas U. Construcción</a></li>
+            <li><a class="dropdown-item" routerLink="unidad-construccion">Unidades de Construcción</a></li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="geoportal">GEOPORTAL</a>
+        </li>
+        
+      <div class="d-flex align-items-center">
+        <a class="nav-link text-white me-3" routerLink="geoportal">
+          <strong>Plataforma</strong>
+        </a>
+
+        <button class="btn btn-light btn-sm px-3 shadow-sm" type="button" (click)="onLogout()">
+          <strong>Cerrar sesión</strong>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+<router-outlet></router-outlet>

@@ -1,0 +1,244 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Contacto de los Interesados</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-user-plus me-2"></i> 
+            <strong> Agregar Contacto de Interesado</strong> 
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>Interesado</th>
+                    <th>Telèfono</th>
+                    <th>Domicilio de notificación</th>
+                    <th>Dirección de residencia</th>
+                    <th>Correo electrónico</th>
+                    <th>Autoriza notifiación por correo</th>
+                    <th>Departamento</th>
+                    <th>Municipio</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of interesadoContactoArray | filter: searchText : ['interesado', 'telefono', 'domicilio_notificacion', 'direccion_notificacion', 'correo_electronico', 'autoriza_notificacion_correo', 'departamento', 'municipio'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+                    <td>{{ item.interesado }}</td>
+                    <td>{{ item.telefono }}</td>
+                    <td>{{ item.domicilio_notificacion }}</td>
+                    <td>{{ item.direccion_notificacion }}</td>
+                    <td>{{ item.correo_electronico }}</td>
+                    <td>
+                        <i *ngIf="item.autoriza_notificacion_correo" class="fa-solid fa-check text-success"></i>
+                        <i *ngIf="!item.autoriza_notificacion_correo" class="fa-solid fa-times text-danger"></i>
+                    </td>
+                    <td>{{ item.departamento }}</td>
+                    <td>{{ item.municipio }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+   
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+        <div style="width: 33%;" class="text-start">
+          <button
+            class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+            [routerLink]="['/cr-interesado']">
+            <i class="fa-solid fa-circle-left ms-1"></i>
+            <strong> Interesados (CR)</strong>
+          </button>
+        </div>
+      
+        <div class="d-flex justify-content-center" style="width: 33%;">
+          <pagination-controls
+            (pageChange)="page = $event"
+            previousLabel="Anterior"
+            nextLabel="Siguiente">
+          </pagination-controls>
+        </div>
+      
+        <div class="d-flex justify-content-end" style="width: 33%;">
+          <button
+            class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+            [routerLink]="['/col-agrupacion-interesados']">
+            <strong>Agrupaciones de interesados (COL)  </strong>
+            <i class="fa-solid fa-circle-right me-1"></i>
+          </button>
+        </div>
+      </div>
+
+   <!-- Formulario de Interesado -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Contacto de Interesado</h5>
+        <form #contactoInteresadoForm="ngForm">
+            <div class="row">
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="interesado" class="form-label mb-0 fw-bold">Interesado <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                        <select
+                            class="form-select"
+                            id="interesado"
+                            name="interesado"
+                            [(ngModel)]="interesadoContactoObj.interesado"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione interesado</option>
+                            <option *ngFor="let interesado of interesados" [value]="interesado.id">
+                            {{ interesado.id }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/cr-interesado']"
+                      title="Ir a Interesado CR">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="telefono" class="form-label mb-0">Teléfono </label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="interesadoContactoObj.telefono"
+                             id="telefono"
+                             name="telefono"
+                             class="form-control"
+                             placeholder="Teléfono.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="domicilio_notificacion" class="form-label mb-0">Domicilio de notificación </label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="interesadoContactoObj.domicilio_notificacion"
+                             id="domicilio_notificacion"
+                             name="domicilio_notificacion"
+                             class="form-control"
+                             placeholder="Domicilio de notificación.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="direccion_notificacion" class="form-label mb-0">Dirección de notificación </label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="interesadoContactoObj.direccion_notificacion"
+                             id="direccion_notificacion"
+                             name="direccion_notificacion"
+                             class="form-control"
+                             placeholder="Direccioòn de notificación.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="correo_electronico" class="form-label mb-0">Correo Electrónico </label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="interesadoContactoObj.correo_electronico"
+                             id="correo_electronico"
+                             name="correo_electronico"
+                             class="form-control"
+                             placeholder="Correo Electrónico.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="departamento" class="form-label mb-0">Departamento </label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="interesadoContactoObj.departamento"
+                             id="departamento"
+                             name="departamento"
+                             class="form-control"
+                             placeholder="Departamento.">
+                    </div>
+                </div>
+
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="municipio" class="form-label mb-0">Municipio </label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="interesadoContactoObj.municipio"
+                             id="municipio"
+                             name="municipio"
+                             class="form-control"
+                             placeholder="Municipio.">
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="autoriza_notificacion_correo"
+                               [(ngModel)]="interesadoContactoObj.autoriza_notificacion_correo" name="autoriza_notificacion_correo">
+                        <label class="form-check-label" for="autoriza_notificacion_correo">
+                            Autoriza notificación por correo
+                        </label>
+                    </div>    
+                </div>
+
+            </div>
+
+            <div class="text-center mt-3">
+                @if (interesadoContactoObj.id == 0) {
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSaveContactoInteresado()" [disabled]="!contactoInteresadoForm.valid || !interesadoContactoObj.interesado || interesadoContactoObj.interesado === 0">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                } @else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdateContactoInteresado()" [disabled]="!contactoInteresadoForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

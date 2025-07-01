@@ -1,0 +1,182 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Fuente Administrativa COL</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fas fa-file-alt"></i> Agregar Fuente Administrtiva COL
+        </button>
+
+        <div class="input-group w-25">
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ID Fuente</th>
+                    <th>Tipo</th>
+                    <th>Número de fuente</th>
+                    <th>Observación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of colFuenteAdministrativaArray | filter: searchText : ['fuente', 'tipo', 'numero_fuente', 'observacion'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.fuente }}</td>
+                    <td>{{ item.tipo }}</td>
+                    <td>{{ item.numero_fuente }}</td>
+                    <td>{{ item.observacion }}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+     
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+      <div style="width: 33%;" class="text-start">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/fuente']">
+          <i class="fa-solid fa-circle-left ms-1"></i>
+          <strong> Fuente</strong>
+        </button>
+      </div>
+    
+      <div class="d-flex justify-content-center" style="width: 33%;">
+        <pagination-controls
+          (pageChange)="page = $event"
+          previousLabel="Anterior"
+          nextLabel="Siguiente">
+        </pagination-controls>
+      </div>
+    
+      <div class="d-flex justify-content-end" style="width: 33%;">
+        <button
+          class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+          [routerLink]="['/lc-fuente-administrativa']">
+          <strong>Fuente Administrativa (LC)  </strong>
+          <i class="fa-solid fa-circle-right me-1"></i>
+        </button>
+      </div>
+    </div>
+
+   <!-- Formulario de Fuente -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Fuente Administativa COL</h5>
+        <form #colFuenteAdministrativaForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="fuente" class="form-label mb-0 fw-bold">ID Fuente <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6"> 
+                      <select
+                        class="form-select"
+                        id="fuente"
+                        name="fuente"
+                        [(ngModel)]="colFuenteAdministrativaObj.fuente"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione fuente</option>
+                        <option *ngFor="let fuente of fuentes" [value]="fuente.id">
+                          {{ fuente.id }}
+                        </option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/fuente']"
+                      title="Ir a Fuentes">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="tipo" class="form-label mb-0 fw-bold">Tipo <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                        class="form-select"
+                        id="tipo"
+                        name="tipo"
+                        [(ngModel)]="colFuenteAdministrativaObj.tipo"
+                        required>
+                        <option [ngValue]="null" disabled selected>Seleccione tipo de fuente administrativa</option>
+                        <option *ngFor="let tipo of tiposfuenteadministrativa" [value]="tipo.valor">
+                          {{ tipo.etiqueta }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="numero_fuente" class="form-label mb-0">Número de fuente</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="colFuenteAdministrativaObj.numero_fuente"
+                             id="numero_fuente"
+                             name="numero_fuente"
+                             class="form-control"
+                             placeholder="Identificador del documento (número de resolución, escritura pública, radicado de una sentencia).">
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="observacion" class="form-label mb-0">Observación</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="colFuenteAdministrativaObj.observacion"
+                             id="observacion"
+                             name="observacion"
+                             class="form-control"
+                             placeholder="Observaciones o descripciones del documento de la fuente administrativa.">
+                    </div>
+                  </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (colFuenteAdministrativaObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!colFuenteAdministrativaForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!colFuenteAdministrativaForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>

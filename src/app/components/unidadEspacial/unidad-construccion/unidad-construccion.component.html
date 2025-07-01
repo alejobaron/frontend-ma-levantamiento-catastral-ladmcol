@@ -1,0 +1,272 @@
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+</head>
+
+<div class="container mt-2">
+    <h3 class="text-center text-uppercase fw-bold mb-4">Unidad de construcción</h3>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button class="btn btn-primary btn-sm px-3 shadow-sm" (click)="mostrarFormulario = true">
+            <i class="fa-solid fa-house"></i> Agregar Unidad de construcción
+        </button>
+
+        <div class="input-group w-25"> 
+            <span class="input-group-text bg-white border-end-0">
+                <i class="fa-solid fa-search"></i>
+            </span>
+            <input type="text" [(ngModel)]="searchText" class="form-control border-start-0" placeholder="Buscar...">
+        </div>
+    </div>
+
+    <div class="table-responsive p-3 bg-white rounded shadow">
+        <table class="table table-hover table-striped align-middle text-center custom-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ID Unidad Espacial</th>
+                    <th>Construcción</th>
+                    <th>Caracteristicas</th>
+                    <th>Tipo de planta</th>
+                    <th>Ubicación de la planta</th>
+                    <th>Área construida de la planta</th>
+                    <th>Altura de la planta</th>
+                    <th>ID Geometría</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of unidadConstruccionArray | filter: searchText : ['unidad_espacial', 'construccion', 'caracteristicas', 'tipo_planta', 'planta_ubicacion', 'area_construida', 'altura', 'geometria_construccion'] | paginate: { itemsPerPage: pageSize, currentPage: page }; let i = index">
+                    <td>{{ i + 1 }}</td>
+                    <td>{{ item.unidad_espacial }}</td>
+                    <td>{{ item.construccion }}</td>
+                    <td>{{ item.caracteristicas }}</td>
+                    <td>{{ item.tipo_planta }}</td>
+                    <td>{{ item.planta_ubicacion }}</td>
+                    <td>{{ item.area_construida }}</td>
+                    <td>{{ item.altura }}</td>
+                    <td>
+                      <button 
+                          class="btn btn-outline-primary btn-sm"
+                          (click)="openDialogFromRow(item)">
+                          <i class="fa-solid fa-map-location-dot"></i>
+                      </button>
+                  </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-warning btn-sm me-2 custom-btn-small" (click)="onEdit(item)">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm custom-btn-small" (click)="onDelete(item.id)">
+                                <i class="fa-solid fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="d-flex justify-content-between align-items-center mt-3">
+  
+        <div style="width: 33%;" class="text-start">
+          <button
+            class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+            [routerLink]="['/caracteristicas-unidad-construccion']">
+            <i class="fa-solid fa-circle-left ms-1"></i>
+            <strong> Caracteristicas unidad de construcción</strong>
+          </button>
+        </div>
+      
+        <div class="d-flex justify-content-center" style="width: 33%;">
+          <pagination-controls
+            (pageChange)="page = $event"
+            previousLabel="Anterior"
+            nextLabel="Siguiente">
+          </pagination-controls>
+        </div>
+
+      <div style="width: 33%;"></div>
+    </div>
+
+   <!-- Formulario de Unidad de construcción -->
+    <div class="card shadow p-4 mt-4" *ngIf="mostrarFormulario">
+        <h5 class="text-center mb-3">Agregar / Editar Unidad de construcción</h5>
+        <form #unidadConstruccionForm="ngForm">
+            <div class="row">
+                <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="unidad_espacial" class="form-label mb-0 fw-bold">ID Unidad Espacial <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                            class="form-select"
+                            id="unidad_espacial"
+                            name="unidad_espacial"
+                            [(ngModel)]="unidadConstruccionObj.unidad_espacial"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione unidad espacial </option>
+                            <option *ngFor="let unidad of unidadesespaciales" [value]="unidad.id">
+                            {{ unidad.id }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/col-unidad-espacial']"
+                      title="Ir a Unidad espacial">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="construccion" class="form-label mb-0">Construcción</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="unidadConstruccionObj.construccion"
+                             id="construccion"
+                             name="construccion"
+                             class="form-control"
+                             placeholder="Identificador de construcción a la que pertenece esta unidad.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="caracteristicas" class="form-label mb-0 fw-bold">Caracteristicas <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                            class="form-select"
+                            id="caracteristicas"
+                            name="caracteristicas"
+                            [(ngModel)]="unidadConstruccionObj.caracteristicas"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione caracteristicas de unidad de construcción </option>
+                            <option *ngFor="let caracteristica of caracteristicasunidadconstruccion" [value]="caracteristica.id">
+                            {{ caracteristica.identificador }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary btn-sm px-3 shadow-sm animate-button"
+                      [routerLink]="['/caracteristicas-unidad-construccion']"
+                      title="Ir a caracteristias unidad de construcción">
+                        <i class="fa-solid fa-circle-right"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="tipo_planta" class="form-label mb-0 fw-bold">Tipo de planta <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <select
+                            class="form-select"
+                            id="tipo_planta"
+                            name="tipo_planta"
+                            [(ngModel)]="unidadConstruccionObj.tipo_planta"
+                            required>
+                            <option [ngValue]="null" disabled selected>Seleccione tipo de planta</option>
+                            <option *ngFor="let tipo of tiposconstruccionplanta" [value]="tipo.valor">
+                            {{ tipo.etiqueta }}
+                            </option>
+                        </select>
+                    </div>
+                  </div>
+                  
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="planta_ubicacion" class="form-label mb-0 fw-bold">Ubicación de la planta <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="unidadConstruccionObj.planta_ubicacion"
+                             id="planta_ubicacion"
+                             name="planta_ubicacion"
+                             class="form-control"
+                             placeholder="Indica númericamente la ubicación de la planta."
+                             required>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="area_construida" class="form-label mb-0 fw-bold">Área construida de la planta <span class="text-danger">*</span></label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="unidadConstruccionObj.area_construida"
+                             id="area_construida"
+                             name="area_construida"
+                             class="form-control"
+                             placeholder="Área total construida en la unidad de construcción."
+                             required>
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="altura" class="form-label mb-0">Altura de la planta</label>
+                    </div>
+                    <div class="col-md-6">
+                      <input type="text"
+                             [(ngModel)]="unidadConstruccionObj.altura"
+                             id="altura"
+                             name="altura"
+                             class="form-control"
+                             placeholder="Altura total de la planta.">
+                    </div>
+                  </div>
+
+                  <div class="row align-items-center mb-3">
+                    <div class="col-md-3">
+                      <label for="terreno_geometria" class="form-label mb-0 fw-bold">Geometría <span class="text-danger">*</span></label>
+                    </div>
+                  
+                    <div class="col-md-6">
+                      <div class="input-group">
+                        <input type="text"
+                               [(ngModel)]="unidadConstruccionObj.unidad_construccion_geometria"
+                               id="unidad_construccion_geometria"
+                               name="unidad_construccion_geometria"
+                               class="form-control"
+                               placeholder="Coordenadas WKT"
+                               readonly
+                               required>
+                  
+                        <button type="button"
+                                class="btn btn-primary btn-sm px-3 shadow-sm"
+                                (click)="openDialog()">
+                          <i class="fa-solid fa-earth-americas"></i>
+                          {{ unidadConstruccionObj.id == 0 ? 'Crear Geometría' : 'Editar Geometría' }}
+                        </button>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-3">
+                @if (unidadConstruccionObj.id == 0){
+                    <button type="submit" class="btn btn-success me-2 btn-sm" (click)="onSave()" [disabled]="!unidadConstruccionForm.valid">
+                        <i class="fa-solid fa-save"></i> Guardar
+                    </button>
+                }@else {
+                    <button type="submit" class="btn btn-warning me-2 btn-sm" (click)="onUpdate()" [disabled]="!unidadConstruccionForm.valid">
+                        <i class="fa-solid fa-pen-to-square"></i> Actualizar
+                    </button>
+                }
+                <button type="button" class="btn btn-danger btn-sm" (click)="onCancel()">
+                    <i class="fa-solid fa-times"></i> Cancelar
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+

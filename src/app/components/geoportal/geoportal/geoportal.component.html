@@ -1,0 +1,13 @@
+<div id="mapa" class="map-container"></div>
+
+<div id="popup" class="popup" *ngIf="selectedFeatureInfo">
+  <a href="#" id="popup-closer" (click)="closePopup($event)" class="popup-closer">×</a>
+  <div id="popup-content">
+    <h4>Información</h4>
+    <ul>
+      <li *ngFor="let key of objectKeys(selectedFeatureInfo)">
+        <strong>{{ key }}</strong>: {{ selectedFeatureInfo[key] }}
+      </li>
+    </ul>
+  </div>
+</div>
